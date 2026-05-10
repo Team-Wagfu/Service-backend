@@ -3,50 +3,51 @@
 # Updated 1 May 2026
 
 from enum import Enum
-from typing import Annotated, TypedDict
-from pydantic import AfterValidator
+from typing import Annotated, TypedDict, Callable
+from pydantic import AfterValidator, Field, TypeAdapter
 
 
-__all__=["PetID", "DocID", "PetOwnerID", "PharmaceuticalID", "ClinicID", "MedicalRecordID", "PhoneNumber", "Location"]
+__all__=["PetID", "DocID", "PetOwnerID", "PharmaceuticalID", "ClinicID", "MedicalRecordID", "PhoneNumber", "Location", "IdTypeAdapter"]
 
 # validator for id prefix
 def prefix(prefix: str)-> Callable[[str], str]:
 
-    ''' generates a validator function object
-    that validated if the given string satisfies the given conditions
+	''' generates a validator function object
+	that validated if the given string satisfies the given conditions
 	along with the given prefix
 
 	Example:
 		prefix('abc') -> function
 
 		function: verifies if the passed string starts with the given prefix
-			and follows the given format prefix-[4 digit]-[5 digit]
+		and follows the given format prefix-[4 digit]-[5 digit]
 	'''
 
 	def validator(value: str) -> str|None:
 		if not value.startswith(prefix):
 			raise ValueError(f'Id should start with {prefix}')
-		
+
 		sectors=value.split('-')[1:]
 		if not (sectors[0].isdigit() and sectors[1].isdigit()):
-			raise ValueError('Id parse failure, format error')
-		
-		if len(sectors[-1])!=6 or len(sectors[0])!=4 or len(sectors)!=2:
-			raise ValueError('Id parse failure, format error')
-		
+			raise ValueError(f'Id parse failure, format error, prefix: {value}, l1')
+
+		if len(sectors[-1])!=5 or len(sectors[0])!=4 or len(sectors)!=2:
+			raise ValueError(f'Id parse failure, format error, prefix: {value}, l2')
+
 		if not int(sectors[-1]):
 			raise ValueError('Invalid ID, 00000')
 
 		return value
+
 	return validator
 
 # validate phone number
 def phone_number_validator(v: str) -> str: # TODO
-    
-	'''' verify if the given phone number is valid or not
+
+	''' verify if the given phone number is valid or not
 	checking thru patterns to see if any of it matches
-	''''
-	
+	'''
+
 	cleaned=re.sub(r'[\s\-$$$$]','',v)
 
 	if not cleaned.isdigit():
@@ -61,17 +62,16 @@ def phone_number_validator(v: str) -> str: # TODO
 	return cleaned
 
 # coordinate dictionary
-class CoordinateDict(TypeDict):
+class CoordinateDict(TypedDict):
     lat: Annotated[float, Field(..., ge=-90, le=90)]
     lng: Annotated[float, Field(..., ge=-180, le=180)]
 
 
 # geolocation coordinates validator
-def geolocation_validator(v: CoordinateDict]) -> CoordinateDict:
+def geolocation_validator(v: CoordinateDict) -> CoordinateDict:
 
     ''' verify whether the given coordinatess are valid or not '''
-    
-	return v
+    return v
 
 
 def phone_number_optional_validator(v: str) -> str: # TODO
@@ -87,11 +87,11 @@ def geolocation_optional_validator(v: CoordinateDict) -> CoordinateDict: # TODO
 # ID types
 PetID=Annotated[str, AfterValidator(prefix('PET'))]
 DocID=Annotated[str, AfterValidator(prefix('DOC'))]
-PetOwnerID=Annotated[str, AfterValidator('PW')]
-PharmaceuticalID=Annotated[str, AfterValidator('PHM')]
-ClinicID=Annotated[str, AfterValidator('CLN')]
-MedicalRecordID=Annotated[str, AfterValidator('MED')]
-PetPassportID=Annotated[str]
+PetOwnerID=Annotated[str, AfterValidator(prefix('PW'))]
+PharmaceuticalID=Annotated[str, AfterValidator(prefix('PHM'))]
+ClinicID=Annotated[str, AfterValidator(prefix('CLN'))]
+MedicalRecordID=Annotated[str, AfterValidator(prefix('MED'))]
+PetPassportID=Annotated[str, AfterValidator(prefix('PPA'))]
 
 # OTHER TYPES
 # type to accommondate phone numbers and validate them
@@ -103,16 +103,22 @@ PhoneNumberOptional=Annotated[str, AfterValidator(phone_number_optional_validato
 Location=Annotated[CoordinateDict, AfterValidator(geolocation_validator)]
 LocationOptional=Annotated[CoordinateDict, AfterValidator(geolocation_optional_validator)]
 
+
+# Collective Type Adapter Class
+class IdTypeAdapter:
+	pet=TypeAdapter(PetID)
+	doc=TypeAdapter(DocID)
+	petowner=TypeAdapter(PetOwnerID)
+	pharma=TypeAdapter(PharmaceuticalID)
+	clinic=TypeAdapter(ClinicID)
+	medical=TypeAdapter(MedicalRecordID)
+	petpassport=TypeAdapter(PetPassportID)
+
 # address type enum (used in AddressDict)
-class AddressType(Enum, str):
+class AddressType(str, Enum):
 	home="home"
 	billing="billing"
 	em="emergency"
-
-# medical record format
-# to be used when parsing medical record
-class MedicalRecord(TypedDict):
-	client_info: Annotated[ClientInfo]
 
 
 # address dict
@@ -132,5 +138,11 @@ class AddressDict(TypedDict):
 # client info dict
 class ClientInfo(TypedDict):
 	name: Annotated[str, Field(..., min_length=3, max_length=50)]
-	address: Annotated[AddressDict, Field(default_generator={})]
+	address: Annotated[AddressDict, Field(default_factory={})]
 	contact: Annotated[PhoneNumber, Field(default='')]
+
+# medical record format
+# to be used when parsing medical record
+class MedicalRecord(TypedDict):
+	client_info: Annotated[ClientInfo, Field(...)]
+

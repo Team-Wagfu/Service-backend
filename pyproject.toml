@@ -1,0 +1,39 @@
+# Wagfu Service Backend
+# Project configuration
+
+[tool.pytest.ini_options]
+# test directory
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Tests*"]
+python_functions = ["test_*"]
+
+addopts = [
+  "-ra",               # show summary of skipped/failed
+  "-q",                # quiet
+  "--tb=short",        # shorter tracebacks
+  "--strict-markers",  # enforce marker declarations
+]
+
+# import resolutions
+pythonpath = ["."]
+markers = [
+  "models: marks model tests",
+  "types: marks types tests",
+  "validators: marks validator function tests",
+  "schema: marks schema tests",
+]
+
+# logging
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s | [%(levelname)s] %(message)s"
+log_cli_date_format = "%H:%M:%S"
+
+filterwarnings = [
+  "error", # turn warnings into errors (strict mode)
+]
+
+[tool.ruff]
+
+src = ["./"]
