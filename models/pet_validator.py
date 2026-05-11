@@ -43,7 +43,7 @@ SPECIES_BREED_COLOR_MAP = {
             "Solid Black",
         ],
         "Beagle": [
-            "Tricolour (White, Brown, Black)",
+            "Tricolour",
             "Lemon",
             "White & Tan",
         ],
@@ -115,35 +115,54 @@ SPECIES_BREED_COLOR_MAP = {
         "Birman": ["Seal Point", "Blue Point", "White Paws"],
     },
     Animals.BRD: {
-        "Budgerigar (Budgie)": ["Green", "Yellow", "Blue", "White", "Mixed"],
-        "Lovebird": ["Green", "White", "Yellow", "Blue"],
-        "Rose-ringed Parakeet": ["Green", "Blue", "Yellow"],
-        "Cockatiel": ["Grey", "White", "Yellow", "Cinnamon"],
+        "Budgerigar (Budgie) [Pet]": [
+            "Green",
+            "Yellow",
+            "Blue",
+            "White",
+            "Mixed",
+        ],
+        "Cockatiel [Pet]": ["Grey", "White", "Yellow", "Cinnamon"],
+        "Lovebird [Pet]": ["Green", "White", "Yellow"],
+        "Rose-ringed Parakeet (Indian Parrot) [Pet]": [
+            "Green",
+            "Blue",
+            "Yellow",
+        ],
     },
-    # Note: Specific source details for Fish, Reptiles, and Rabbits are limited compared to Dogs/Cats
     Animals.FISH: {
-        "Betta": ["Red", "Blue", "Purple", "White"],
-        "Goldfish": ["Orange", "Red", "White", "Calico"],
+        "Basa/Swai (Striped Catfish) [Food]": ["Pinkish-White", "Dark Pink"],
+        "Common Carp (Koi) [Ornamental]": [
+            "White",
+            "Red",
+            "Black",
+            "Yellow",
+            "Blue",
+            "Gold",
+            "Silver",
+        ],
+        "Milkfish [Food]": ["Silver", "White"],
+        "Nile Tilapia [Food]": ["Silver-Grey", "Darker Grey"],
+        "Rainbow Trout [Food]": ["Silver", "Multi-colored Speckled"],
     },
     Animals.RBT: {
-        # Sorted and marked based on primary usage in South Asia
-        "Angora (British/Russian/French) [Wool]": ["Pure White"],  # [4], [3]
-        "Angora (German) [Wool]": ["Pure White"],  # [5]
+        "Angora (British/Russian/French) [Wool]": ["Pure White"],
+        "Angora (German) [Wool]": ["Pure White"],
         "Californian [Meat/Fur]": [
             "White with Black Points",
             "White with Brown Points",
-        ],  # [4], [6]
-        "Grey Giant [Meat/Fur]": ["Solid Grey"],  # [2], [7]
-        "Himalayan [Meat/Fur/Pet]": ["White with Black Extremities"],  # [8], [9]
+        ],
+        "Grey Giant [Meat/Fur]": ["Solid Grey"],
+        "Himalayan [Meat/Fur/Pet]": ["White with Black Extremities"],
         "Indian Crossbreds [Local Type]": [
             "Non-uniform",
             "Grey",
             "Spotted",
             "White",
-        ],  # [10], [11]
-        "New Zealand White [Meat/Fur]": ["Albino White (Red Eyes)"],  # [2], [12]
-        "Soviet Chinchilla [Meat/Fur]": ["Blue-Grey with White Belly"],  # [6]
-        "White Giant [Meat/Fur]": ["Pure White (Red Eyes)"],  # [1], [13]
+        ],
+        "New Zealand White [Meat/Fur]": ["Albino White (Red Eyes)"],
+        "Soviet Chinchilla [Meat/Fur]": ["Blue-Grey with White Belly"],
+        "White Giant [Meat/Fur]": ["Pure White (Red Eyes)"],
     },
     Animals.OTH: {
         "Hamster": ["Golden", "White", "Grey"],
