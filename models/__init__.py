@@ -1,8 +1,10 @@
 # Wagfu Service Backend
 # handle models for db, SQLAlchemy
-# Updated 29 Apr 2026
+# Updated 12 May 2026
 
-from app.models.medical_records import MedicalRecord
-from app.models.pets import Pets
+from models.base import Base
+from models.pets import Pets  # noqa: F401
+from models.profile import AdminProfile, PetOwnerProfile, DoctorProfile  # noqa: F401
+from models.user import User  # noqa: F401
 
-__all__ = ["MedicalRecords", "Pets"]
+__all__ = ["Base"]

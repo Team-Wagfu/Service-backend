@@ -77,13 +77,13 @@ class User(Base):
         "PetOwnerProfile", back_populates="user", uselist=False
     )
     doctor_profile = relationship("DoctorProfile", back_populates="user", uselist=False)
-    emergency_profile = relationship(
-        "EmergencyProfile", back_populates="user", uselist=False
-    )
+    # emergency_profile = relationship(
+    #     "EmergencyProfile", back_populates="user", uselist=False
+    # )
     admin_profile = relationship("AdminProfile", back_populates="user", uselist=False)
-    pharmacy_profile = relationship(
-        "PharmaceuticalProfile", back_populates="user", uselist=False
-    )
+    # pharmacy_profile = relationship(
+    #     "PharmaceuticalProfile", back_populates="user", uselist=False
+    # )
 
 
 __all__ = ["User"]
