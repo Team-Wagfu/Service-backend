@@ -218,3 +218,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ignore code workspace file
+*.code-workspace
+
+# ignore test files and directories
+./test
+./tests
+.tests/
+.test/
