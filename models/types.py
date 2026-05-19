@@ -4,12 +4,24 @@ custom types
 Updated 8 May 2026
 """
 
+from pydantic import ValidationError
+
 from sqlalchemy import String, Integer
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy import TypeDecorator
+
+from core.types import Coordinates, FacilitatorLinks
 
 # from core.types import IdTypeAdapter
 
-__all__ = ["CapString", "LowString", "UpString", "UInteger"]
+__all__ = [
+    "CapString",
+    "LowString",
+    "UpString",
+    "UInteger",
+    "CoordinateJSONB",
+    "SocialsJSONB",
+]
 
 
 # type decorator base for string type
@@ -21,6 +33,12 @@ class StringType(TypeDecorator):
 # type decorator base for int type
 class IntegerType(TypeDecorator):
     impl = Integer
+    cache_ok = True
+
+
+# type decorator base for JSONB type
+class JSONBType(TypeDecorator):
+    impl = JSONB
     cache_ok = True
 
 
@@ -72,3 +90,61 @@ class UInteger(IntegerType):
 
     def process_result_value(self, value: int, dialect):
         return value
+
+
+class CoordinateJSONB(JSONBType):
+    """
+    Coordinate JSONB having keys lat,lng
+    and constrained values
+    """
+
+    def process_bind_param(self, value: dict, dialect):
+        if value is None:
+            return None
+
+        if isinstance(value, dict):
+            try:
+                Coordinates(**value)  # try to create model
+                return value
+            except ValidationError as e:
+                raise ValueError(f"Unable to parse value {value}") from e
+
+    def process_result_value(self, value: dict, dialect):
+        if value is None:
+            return None
+
+        if isinstance(value, dict):
+            return Coordinates(**value)
+
+
+class AddressJSONB(JSONBType):
+    """
+    Address JSONB type with keys defined in the Model
+    Address
+    """
+
+    pass
+
+
+class SocialsJSONB(JSONBType):
+    """
+    Social links and stuff storing jsonb
+    """
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return None
+
+        if isinstance(value, dict):
+            try:
+                FacilitatorLinks(**value)
+                return value
+            except Exception as e:
+                raise ValueError("Failed to validate FacilitatorLinks Structure") from e
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return None
+
+        if isinstance(value, dict):
+            return FacilitatorLinks(**value)

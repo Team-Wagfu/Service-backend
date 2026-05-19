@@ -67,7 +67,7 @@ class Vaccination(Base):
     __tablename__ = "vaccinations"
 
     # id of the pet to whic hteh record belongs to
-    pet_id = Column(UpString, ForeignKey("pets.pet_id"))
+    pet_id = Column(UpString, ForeignKey("pets.pet_id"), primary_key=True)
 
     # name of the vaccination
     vaccine = Column(LowString, nullable=False)

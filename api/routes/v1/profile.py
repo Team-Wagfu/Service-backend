@@ -5,9 +5,6 @@
 from fastapi import APIRouter, HTTPException
 
 # configure export variables
-__all__ = []
+__all__ = ["router"]
 
-router = APIRouter(
-    prefix='/profile'
-)
-
+router = APIRouter(prefix="/profile")

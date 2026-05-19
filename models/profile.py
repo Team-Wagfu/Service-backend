@@ -14,8 +14,8 @@ from sqlalchemy.orm import validates, relationship
 
 from models.base import Base
 
-from models.user import User  # noqa: F401
-from models.types import UpString, LowString, UInteger
+# from models.user import User  # noqa: F401
+from models.types import UpString, LowString, UInteger, FacilitatorLinks
 from core.types import IdTypeAdapter as a
 
 
@@ -36,6 +36,7 @@ class PetOwnerProfile(Base):
         UpString(15),
         primary_key=True,
         nullable=False,
+        index=True,
     )
 
     # check if the id format is valid
@@ -79,7 +80,7 @@ class PetOwnerProfile(Base):
         default=list,
     )
 
-    user = relationship("User", back_populates="pet_owner_profile", use_list=False)
+    user = relationship("User", back_populates="pet_owner_profile", uselist=False)
     pet = relationship("Pets", back_populates="owner")
 
 
@@ -100,6 +101,7 @@ class DoctorProfile(Base):
         UpString(15),
         primary_key=True,
         nullable=False,
+        index=True,
     )
 
     # particular specialization of the doctor, if any
@@ -115,7 +117,7 @@ class DoctorProfile(Base):
     rating_count = Column(UInteger, nullable=False, default=0)
 
     user = relationship("User", back_populates="doctor_profile")
-    clinics = relationship("Clinic", back_populates="doctor")
+    # clinics = relationship("ClinicProfile", back_populates="doctor")
 
     __table_args__ = (
         CheckConstraint(and_(experience >= 0), name="ck_experience_duration"),
@@ -128,19 +130,85 @@ class DoctorProfile(Base):
         ),
     )
 
-    user = relationship("User", back_populates="doctor_profile", use_list=False)
+    user = relationship("User", back_populates="doctor_profile", uselist=False)
 
 
 class AdminProfile(Base):
     """admin profile table"""
 
-    __tablename__ = "admin"
+    __tablename__ = "admin_profile"
 
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), primary_key=True)
 
     id = Column(UpString(15), nullable=False, primary_key=True)
 
     user = relationship("User", back_populates="admin_profile")
+
+
+# class ClinicProfile(Base):
+#     """clinic profile table, handle clinic metadata"""
+
+#     __tablename__ = "clinic_profile"
+
+#     user_id = Column(
+#         UUID(as_uuid=True),
+#         ForeignKey("users.user_id"),
+#         primary_key=True,
+#     )
+
+#     id = Column(
+#         UpString(15),
+#         primary_key=True,
+#         nullable=False,
+#         index=True,
+#     )
+
+#     name = Column(
+#         LowString,
+#         nullable=False,
+#     )
+
+#     location = Column(
+#         CoordinateJSONB,
+#         nullable=False,
+#     )
+
+#     address = Column(
+#         AddressJSONB,
+#         nullable=False,
+#     )
+
+
+class FacilitatorProfile(Base):
+    """facilitator profile table"""
+
+    __tablename__ = "facilitator_profile"
+
+    user_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("users.user_id"),
+        primary_key=True,
+        index=True,
+    )
+
+    id = Column(
+        UpString(15),
+        primary_key=True,
+        nullable=False,
+        index=True,
+    )
+
+    # name of the facility
+    name = Column(String, nullable=False)
+
+    # a  short description about the website
+    # can be markdown formatted if specified
+    description = Column(String(150), nullable=False, default="")
+
+    # wesbite or other links
+    links = Column(
+        FacilitatorLinks,
+    )
 
 
 __all__ = ["PetOwnerProfile", "AdminProfile", "DoctorProfile"]

@@ -8,18 +8,33 @@
 from enum import Enum
 
 __all__ = [
-    "Dog", "Cat", "Bird", "Fish", "Reptile", "Rabbit", "Other", # breeds
-    "DogColor", "CatColor", "BirdColor", "FishColor", "ReptileColor", "RabbitColor", "OtherColor", # colors
+    "Dog",
+    "Cat",
+    "Bird",
+    "Fish",
+    "Reptile",
+    "Rabbit",
+    "Other",  # breeds
+    "DogColor",
+    "CatColor",
+    "BirdColor",
+    "FishColor",
+    "ReptileColor",
+    "RabbitColor",
+    "OtherColor",  # colors
+    "AddressType",
 ]
 
+
 class Animals(str, Enum):
-    DOG="dog"
-    CAT="cat"
-    BIRD="bird"
-    FISH="fish"
-    REPTILE="reptile"
-    RABBIT="rabbit"
-    OTHER="other"
+    DOG = "dog"
+    CAT = "cat"
+    BIRD = "bird"
+    FISH = "fish"
+    REPTILE = "reptile"
+    RABBIT = "rabbit"
+    OTHER = "other"
+
 
 class Dog(str, Enum):
     LABRADOR = "Labrador"
@@ -90,6 +105,7 @@ class Other(str, Enum):
     SUGARGLIDER = "Sugarglider"
     RAT = "Rat"
 
+
 class DogColor(str, Enum):
     BLACK = "Black"
     WHITE = "White"
@@ -157,3 +173,15 @@ class OtherColor(str, Enum):
     WHITE = "White"
     TAN = "Tan"
     MULTI = "Multi"
+
+
+class AddressType(str, Enum):
+    home = "home"
+    facility = "facility"
+    em = "emergency"
+
+
+class PollType(int, Enum):
+    notification = 1  # if its a reminder or oother kind of notification
+    call = 2
+    chat = 3  # if its a chat notification

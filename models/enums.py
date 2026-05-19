@@ -15,6 +15,7 @@ class UserType(str, Enum):
     DOCS = "doctor"
     ADMIN = "admin"
     PHARMA = "pharmaceuticals"
+    FACILITATOR = "facilitator"  # non-doc entity owning a medical facility
 
 
 class Animals(str, Enum):

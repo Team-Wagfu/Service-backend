@@ -74,15 +74,35 @@ class User(Base):
 
     # relationships
     pet_owner_profile = relationship(
-        "PetOwnerProfile", back_populates="user", uselist=False
+        "PetOwnerProfile",
+        back_populates="user",
+        uselist=False,
     )
-    doctor_profile = relationship("DoctorProfile", back_populates="user", uselist=False)
+    doctor_profile = relationship(
+        "DoctorProfile",
+        back_populates="user",
+        uselist=False,
+    )
+    admin_profile = relationship(
+        "AdminProfile",
+        back_populates="user",
+        uselist=False,
+    )
+    clinic_profile = relationship(
+        "ClinicProfile",
+        back_populates="user",
+        uselist=False,
+    )
+
     # emergency_profile = relationship(
-    #     "EmergencyProfile", back_populates="user", uselist=False
+    #     "EmergencyProfile",
+    #     back_populates="user",
+    #     uselist=False,
     # )
-    admin_profile = relationship("AdminProfile", back_populates="user", uselist=False)
     # pharmacy_profile = relationship(
-    #     "PharmaceuticalProfile", back_populates="user", uselist=False
+    #     "PharmaceuticalProfile",
+    #     back_populates="user",
+    #     uselist=False,
     # )
 
 
