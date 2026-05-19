@@ -219,3 +219,9 @@ __marimo__/
 
 # ignore code workspace file
 *.code-workspace
+
+# ignore test files and directories
+./test
+./tests
+.tests/
+.test/
