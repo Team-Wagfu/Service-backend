@@ -185,3 +185,9 @@ class PollType(int, Enum):
     notification = 1  # if its a reminder or oother kind of notification
     call = 2
     chat = 3  # if its a chat notification
+
+
+class UserType(str, Enum):
+    owner = "owner"
+    doctor = "doctor"
+    facilitator = "fac"

@@ -148,3 +148,9 @@ class SocialsJSONB(JSONBType):
 
         if isinstance(value, dict):
             return FacilitatorLinks(**value)
+
+
+class EmailString(String):
+    """ """
+
+    pass

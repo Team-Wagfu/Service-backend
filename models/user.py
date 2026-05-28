@@ -11,6 +11,7 @@ from sqlalchemy import Boolean, Date, DateTime, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
+from models.types import CapString, LowString
 from models.enums import UserType
 from models.base import Base
 
@@ -38,7 +39,10 @@ class User(Base):
     )
 
     # a simple display name to identify the user and show as username in the application
-    display_name = Column(String(50), nullable=False)
+    display_name = Column(CapString(50), nullable=False)
+
+    # email of the user
+    email = Column(LowString, nullable=False)
 
     # column consisting of the unique id of user, slug included one
     # to identify the user profile in particular profile table

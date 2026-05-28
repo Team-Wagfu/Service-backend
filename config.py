@@ -15,6 +15,7 @@ class Config(BaseSettings):
     DB_PORT: int = 5432
     DB_DATABASE: str = "wagfu_db"
     DB_PASSWORD: str  # will be populated by .env
+    JWT_SECRET: str  # will be populated by .env
 
     model_config = SettingsConfigDict(env_file=".env.local")
 
