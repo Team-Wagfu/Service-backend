@@ -11,7 +11,6 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     model_validator,
-    field_validator,
     ValidationError,
 )
 
@@ -26,6 +25,8 @@ __all__ = [
     "PharmaceuticalID",
     "ClinicID",
     "MedicalRecordID",
+    "PetPassportID",
+    "FacilitatorID",
     "IdTypeAdapter",
 ]
 
@@ -37,6 +38,7 @@ PharmaceuticalID = Annotated[str, AfterValidator(prefix("PHM"))]
 ClinicID = Annotated[str, AfterValidator(prefix("CLN"))]
 MedicalRecordID = Annotated[str, AfterValidator(prefix("MED"))]
 PetPassportID = Annotated[str, AfterValidator(prefix("PPA"))]
+FacilitatorID = PharmaceuticalID | ClinicID
 
 
 class IdTypeAdapter:
@@ -49,6 +51,7 @@ class IdTypeAdapter:
     clinic = TypeAdapter(ClinicID)
     medical = TypeAdapter(MedicalRecordID)
     petpassport = TypeAdapter(PetPassportID)
+    fac = TypeAdapter(FacilitatorID)
 
 
 class Coordinates(BaseModel):
@@ -81,10 +84,16 @@ class Address(BaseModel):
     address_type: Annotated[
         AddressType,
         Field(
-            default=AddressType.home,
-            description="type of address, home/billing/emergency",
+            default=AddressType.HOME,
+            description="address type, could be home/facility location",
         ),
     ]
+
+    model_config = ConfigDict(
+        extra="ignore",
+        use_enum_values=True,
+        str_to_lower=True,
+    )
 
 
 class FacilitatorLinks(BaseModel):

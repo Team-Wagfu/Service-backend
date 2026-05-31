@@ -32,14 +32,20 @@ def prefix(p: str) -> Callable[[str], str]:
     """
 
     def validator(value: str) -> str | None:
-        if not value.startswith(prefix):
+        if value == "":
+            return value
+
+        if not value.startswith(p):
             raise ValueError(f"Id should start with {p}")
 
         sectors = value.split("-")[1:]
+        if len(sectors) != 2:
+            raise ValueError(f"Id parse failure, format error, prefix: {value}, l1")
+
         if not (sectors[0].isdigit() and sectors[1].isdigit()):
             raise ValueError(f"Id parse failure, format error, prefix: {value}, l1")
 
-        if len(sectors[-1]) != 5 or len(sectors[0]) != 4 or len(sectors) != 2:
+        if len(sectors[-1]) != 5 or len(sectors[0]) != 4:
             raise ValueError(f"Id parse failure, format error, prefix: {value}, l2")
 
         if not int(sectors[-1]):
@@ -56,7 +62,15 @@ def phone_number_validator(v: str) -> str:  # TODO
     checking thru patterns to see if any of it matches
     """
 
-    cleaned = re.sub(r"[\s\-$$$$]", "", v)
+    cleaned = re.sub(r"[\s\-]", "", v)
+
+    if not cleaned:
+        return True
+
+    if cleaned.startswith("+91"):
+        cleaned = cleaned[3:]
+    elif cleaned.startswith("91") and len(cleaned) == 12:
+        cleaned = cleaned[2:]
 
     if not cleaned.isdigit():
         raise ValueError("Phone number must contain only digits")
@@ -64,16 +78,19 @@ def phone_number_validator(v: str) -> str:  # TODO
     if len(cleaned) != 10:
         raise ValueError("Phone number must be 10 digits")
 
-    if not re.match(r"^(\+91|0)?[6-9]\d{9}$", cleaned):
+    if cleaned.startswith("0"):
         raise ValueError("Invalid Phone number")
 
     return cleaned
 
 
-SOCIAL_PATTERN = (
-    r"^(?P<is_username>@(?P<username>[a-zA-Z0-9._]{1,30}))|"
-    r"(?P<is_url>https?://(?P<website>(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)))$"
+LINK_PATTERN = (
+    r"^(?:https://)?(?:www\.)?"
+    r"[-a-zA-Z0-9@:%._+~#=]{1,256}"
+    r"\.[a-zA-Z0-9()]{1,6}\b"
+    r"(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$"
 )
+USERNAME_PATTERN = r"^@[a-zA-Z0-9._]{1,30}$"
 
 
 def validate_link(link: str) -> str:
@@ -82,16 +99,11 @@ def validate_link(link: str) -> str:
     """
 
     if not link:
-        return link
+        return True
 
-    matched_link = re.match(SOCIAL_PATTERN, link)
+    matched_link = re.match(LINK_PATTERN, link)
     if not matched_link:
         raise ValueError("Provided string doesn't adhere to standard url format")
-
-    # check if matched against is_url format
-    if not matched_link.group("is_url"):
-        # shouldn't occur
-        raise ValueError("failed to parse usl from given format")
 
     return link
 
@@ -102,14 +114,10 @@ def validate_username(username: str) -> str:
     """
 
     if not username:
-        return username
+        return True
 
-    matched_username = re.match(SOCIAL_PATTERN, username)
+    matched_username = re.match(USERNAME_PATTERN, username)
     if not matched_username:
         raise ValueError("Provided username doesnt follow username format")
-
-    if not matched_username.group("is_username"):
-        # shouldn't occur, this too
-        raise ValueError("Failed to parse username from given format")
 
     return username

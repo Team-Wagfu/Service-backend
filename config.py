@@ -2,9 +2,8 @@
 # common configuration and settings, fastapi friendly
 # Update 12 May 2026
 
-from os import getenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy import URL, Engine, create_engine
+from sqlalchemy import URL
 
 
 class Config(BaseSettings):
@@ -31,13 +30,13 @@ class Config(BaseSettings):
             database=self.DB_DATABASE,
         )
 
-    @property
-    def engine(self) -> Engine:
-        """return the engine object"""
-        return create_engine(
-            self.url,
-            echo=True,
-        )
+    # @property
+    # def engine(self) -> Engine:
+    #     """return the engine object"""
+    #     return create_engine(
+    #         self.url,
+    #         echo=True,
+    #     )
 
 
 config = Config()

@@ -12,9 +12,8 @@ from pydantic import (
     ConfigDict,
     model_validator,
     field_validator,
-    Annotated,
 )
-from typing import TypedDict
+from typing import Annotated, TypedDict
 from typing_extensions import Self
 import datetime
 from enum import Enum
@@ -91,7 +90,7 @@ class NotificationList(NotificationModel):
 
     @field_validator("data")
     @classmethod
-    def validator_sort_notifications(self, l: list[Notification]) -> list[Notification]:
+    def validator_sort_notifications(cls, l: list[Notification]) -> list[Notification]:
         # sort the notification in the decreasing order of priority
         return sorted(
             l,
@@ -103,7 +102,7 @@ class NotificationList(NotificationModel):
 
 
 # notification acknowledgement action enumeration
-class NotificationAckAction(Enum, str):
+class NotificationAckAction(str, Enum):
     ack = "ack"  # acknowledge, mark as read, keep the Notifications
     delete = "delete"  # delete, status insignificant
     ack_del = "ack-del"  # ack and delete (fallback)

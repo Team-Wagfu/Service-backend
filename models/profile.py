@@ -8,14 +8,21 @@ from decimal import Decimal
 
 from sqlalchemy import Column, CheckConstraint, and_, ForeignKey
 from sqlalchemy import String, Numeric
-from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY
+from sqlalchemy.dialects.postgresql import UUID, ARRAY
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import validates, relationship
 
 from models.base import Base
+from models.enums import FacilityTypeEnum
 
-# from models.user import User  # noqa: F401
-from models.types import UpString, LowString, UInteger, FacilitatorLinks
+from models.types import (
+    UpString,
+    LowString,
+    UInteger,
+    SocialsJSONB,
+    CoordinateJSONB,
+    AddressJSONB,
+)
 from core.types import IdTypeAdapter as a
 
 
@@ -49,29 +56,14 @@ class PetOwnerProfile(Base):
 
     # approximate location of the user, mutability to avoid dirty orm
     location = Column(
-        MutableDict.as_mutable(
-            JSONB(
-                none_as_null=True,
-            )
-        ),
-        nullable=False,
-        default=lambda: {},  # need to enale automatic location detection and populate it with current location
+        CoordinateJSONB,
+        default={},  # need to enale automatic location detection and populate it with current location
     )
 
-    # the location json should contain the keys lat and lng
-    @validates("location")
-    def validate_location(self, key, value) -> JSONB:
-        """location has lat and lng keys and values of appropriate type"""
+    # insertion and retrieval takes the model core.types.Address
+    # when inserting, use Address.model_dump() to retrieve the dict and pass to insertion function
+    address = Column(AddressJSONB, default={})
 
-        if "lat" not in value:
-            raise KeyError("missing key, lat")
-        elif "lng" not in value:
-            raise KeyError("missing key, lng")
-        elif not isinstance(value["lat"], float) or not isinstance(value["lng"], float):
-            raise ValueError("Invalid type for coordinates")
-        return value
-
-    # TODO
     # make sure the values being appended into the list are ids
     # that exists in the pet table
     pet_ids = Column(
@@ -105,7 +97,7 @@ class DoctorProfile(Base):
     )
 
     # particular specialization of the doctor, if any
-    specialization = Column(LowString, nullable=False, default="general")
+    specialization = Column(LowString(50), nullable=False, default="general")
 
     # number of years of experience
     experience = Column(UInteger, nullable=False, default=0)
@@ -145,40 +137,6 @@ class AdminProfile(Base):
     user = relationship("User", back_populates="admin_profile")
 
 
-# class ClinicProfile(Base):
-#     """clinic profile table, handle clinic metadata"""
-
-#     __tablename__ = "clinic_profile"
-
-#     user_id = Column(
-#         UUID(as_uuid=True),
-#         ForeignKey("users.user_id"),
-#         primary_key=True,
-#     )
-
-#     id = Column(
-#         UpString(15),
-#         primary_key=True,
-#         nullable=False,
-#         index=True,
-#     )
-
-#     name = Column(
-#         LowString,
-#         nullable=False,
-#     )
-
-#     location = Column(
-#         CoordinateJSONB,
-#         nullable=False,
-#     )
-
-#     address = Column(
-#         AddressJSONB,
-#         nullable=False,
-#     )
-
-
 class FacilitatorProfile(Base):
     """facilitator profile table"""
 
@@ -199,16 +157,25 @@ class FacilitatorProfile(Base):
     )
 
     # name of the facility
-    name = Column(String, nullable=False)
+    name = Column(LowString(100), nullable=False)
 
     # a  short description about the website
     # can be markdown formatted if specified
-    description = Column(String(150), nullable=False, default="")
+    description = Column(LowString(150), nullable=False, default="")
+
+    # address of the facilitator
+    address: Column(AddressJSONB, nullable=False, default={})
+
+    # facility type
+    type = Column(
+        FacilityTypeEnum,
+        nullable=False,
+    )
 
     # wesbite or other links
     links = Column(
-        FacilitatorLinks,
+        SocialsJSONB,
     )
 
 
-__all__ = ["PetOwnerProfile", "AdminProfile", "DoctorProfile"]
+__all__ = ["PetOwnerProfile", "AdminProfile", "DoctorProfile", "FacilitatorProfile"]

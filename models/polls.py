@@ -2,12 +2,13 @@
 Polling system schematics
 """
 
-from sqlalchemy import Column, Enum, ForeignKey, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Enum, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID, ARRAY
+from sqlalchemy.orm import relationship
 
-from models.types import UInteger, LowString
-from models.base import Base
+from models.types import UInteger
+
+from models.base import Base  # unregister it for the time being
 from core.enums import PollType
 
 
@@ -81,12 +82,15 @@ class PollChatNotification(Base):
         UInteger,
         nullable=False,
         primary_key=True,
+        index=True,
     )
 
     chat_id = Column(
-        LowString(32),  # 32 byte unique key identifying a chat between 2 users
+        UUID(as_uuid=True),  # 32 byte unique key identifying a chat between 2 users
         nullable=False,
     )
+
+    chat = relationship("Chats", back_populates="poll_chat_info", uselist=False)
 
 
 class PollNotification(Base):
@@ -94,3 +98,10 @@ class PollNotification(Base):
     reminders etc"""
 
     __tablename__ = "polls_notification"
+
+    id = Column(
+        UInteger,
+        nullable=False,
+        primary_key=True,
+        index=True,
+    )

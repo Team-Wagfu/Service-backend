@@ -12,8 +12,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from models.types import CapString, LowString
-from models.enums import UserType
 from models.base import Base
+from core.enums import UserType
 
 
 class User(Base):
@@ -35,7 +35,7 @@ class User(Base):
     type = Column(
         Enum(UserType, name="enum_usertype"),  # define a sql enum, and use it
         nullable=False,
-        default=UserType.PET_OWNER,
+        default=UserType.owner,
     )
 
     # a simple display name to identify the user and show as username in the application
@@ -97,17 +97,6 @@ class User(Base):
         back_populates="user",
         uselist=False,
     )
-
-    # emergency_profile = relationship(
-    #     "EmergencyProfile",
-    #     back_populates="user",
-    #     uselist=False,
-    # )
-    # pharmacy_profile = relationship(
-    #     "PharmaceuticalProfile",
-    #     back_populates="user",
-    #     uselist=False,
-    # )
 
 
 __all__ = ["User"]

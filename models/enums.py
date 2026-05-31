@@ -4,27 +4,22 @@ handle orm enumeration types
 Updated 7 May 2026
 """
 
-from enum import Enum
+from core.enums import UserType, Animals, FacilityType
+from sqlalchemy import Enum
 
+__all__ = ["UserTypeEnum", "AnimalsEnum", "FacilityTypeEnum"]
 
-class UserType(str, Enum):
-    """types of users"""
+UserTypeEnum = Enum(
+    UserType,
+    values_callable=lambda obj: [x.value for x in obj],  # to prevent use of enum keys
+)
 
-    PET_OWNER = "owner"
-    EMERGENCY = "emergency"
-    DOCS = "doctor"
-    ADMIN = "admin"
-    PHARMA = "pharmaceuticals"
-    FACILITATOR = "facilitator"  # non-doc entity owning a medical facility
+AnimalsEnum = Enum(
+    Animals,
+    values_callable=lambda obj: [x.value for x in obj],
+)
 
-
-class Animals(str, Enum):
-    """types of animals"""
-
-    DOG = "dog"
-    CAT = "cat"
-    BRD = "bird"
-    FISH = "fish"
-    REP = "reptile"
-    RBT = "rabbit"
-    OTH = "other"
+FacilityTypeEnum = Enum(
+    FacilityType,
+    values_callable=lambda obj: [x.value for x in obj],
+)

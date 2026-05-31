@@ -10,9 +10,7 @@ from sqlalchemy import String, Integer
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy import TypeDecorator
 
-from core.types import Coordinates, FacilitatorLinks
-
-# from core.types import IdTypeAdapter
+from core.types import Coordinates, FacilitatorLinks, Address
 
 __all__ = [
     "CapString",
@@ -21,6 +19,7 @@ __all__ = [
     "UInteger",
     "CoordinateJSONB",
     "SocialsJSONB",
+    "AddressJSONB",
 ]
 
 
@@ -117,15 +116,6 @@ class CoordinateJSONB(JSONBType):
             return Coordinates(**value)
 
 
-class AddressJSONB(JSONBType):
-    """
-    Address JSONB type with keys defined in the Model
-    Address
-    """
-
-    pass
-
-
 class SocialsJSONB(JSONBType):
     """
     Social links and stuff storing jsonb
@@ -150,7 +140,25 @@ class SocialsJSONB(JSONBType):
             return FacilitatorLinks(**value)
 
 
-class EmailString(String):
-    """ """
+class AddressJSONB(JSONBType):
+    """
+    address JSONB type (core.types.address)
+    """
 
-    pass
+    def process_bind_param(self, value: dict, dialect):
+        if value is None:
+            return None
+
+        if isinstance(value, Address):
+            try:
+                Address(**value)
+                return value
+            except ValidationError as e:
+                raise ValueError("Wrong address format") from e
+
+    def process_result_value(self, value: dict, dialect):
+        if value is None:
+            return None
+
+        if isinstance(value, dict):
+            return Address(**value)

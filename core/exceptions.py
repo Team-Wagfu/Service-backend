@@ -1,18 +1,40 @@
 """
-systemwide exception definitions
+systemwide exception definitions, to be caught by middleware
 """
 
 
-class InvalidActionException(Exception):
-    """for parser internal actions"""
+class AppError(Exception):
+    """Application exception superclass"""
+
+    def __init__(self, msg: str, status_code: int = 400):
+        self.msg = msg
+        self.status_code = status_code
+        super().__init__(msg)  # creates Exception instance
 
 
-class TemplateFileError(Exception):
-    """for handling template file related errors"""
+class ExpiredTokenException(AppError):
+    """token timed out"""
+
+    def __init__(self):
+        super().__init__(
+            msg="Expired Token, please re-authenticate", status_code=403
+        )  # creates AppError instance
 
 
-class NormalisationFailureWarning(Exception):
-    """raised when normalisation functions fail"""
+class InvalidSignatureException(AppError):
+    """token signature mismatch"""
+
+    def __init__(self):
+        super().__init__(
+            msg="Invalid Token, please re-aquire a new token", status_code=403
+        )  # creates AppError instance
+
+    # add method to note this exception
+    @staticmethod
+    def notify():
+        """invalid signature tries should be noticed for security audit"""
+        pass
 
 
-__all__ = ["InvalidActionException"]
+# export
+__all__ = ["ExpiredTokenException", "InvalidSignatureException"]

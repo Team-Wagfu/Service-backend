@@ -9,16 +9,22 @@ Client A(initialtor) <---> Client B
 users are identified by UUID, since anyone can be an initiator
 """
 
+from datetime import date
+
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy.dialect.postgresql import UUID
+from sqlalchemy import Date, Boolean
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID
 
 from models.base import Base
-from models.types import UpString, LowString, UInteger
+from models.types import LowString
+from services.jwt.helper import create_32_hex
 
 
 class Chats(Base):
     """handle chat metadata"""
+
+    __tablename__ = "chats"
 
     chat_id = Column(
         UUID(as_uuid=True),
@@ -42,4 +48,30 @@ class Chats(Base):
         nullable=True,
     )
 
-    chat_key = Column(LowString)
+    # end-t-end ecryption key
+    chat_key = Column(
+        LowString,
+        nullable=False,
+        default=create_32_hex,
+    )
+
+    # chat initiation date
+    start_date = Column(
+        Date,
+        default=date.today,
+        nullable=False,
+    )
+
+    # if the chat has been inactive for more than 5 days
+    active = Column(
+        Boolean,
+        default=True,
+        nullable=False,
+    )
+
+    poll_chat_info = relationship(
+        "PollChatNotifications", back_populates="chat_chat", uselist=False
+    )
+
+
+__all__ = ["Chats"]

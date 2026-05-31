@@ -176,9 +176,8 @@ class OtherColor(str, Enum):
 
 
 class AddressType(str, Enum):
-    home = "home"
-    facility = "facility"
-    em = "emergency"
+    HOME = "home"
+    FACILITY = "facility"
 
 
 class PollType(int, Enum):
@@ -191,3 +190,10 @@ class UserType(str, Enum):
     owner = "owner"
     doctor = "doctor"
     facilitator = "fac"
+
+
+class FacilityType(str, Enum):
+    PHAR = "pharmaceutical"
+    CLINIC = "clinic"
+    SPA = "spa"
+    CARE = "care"

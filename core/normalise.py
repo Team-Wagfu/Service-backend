@@ -16,7 +16,7 @@ def normalise_link(link: str) -> str:
         return ""
 
     try:
-        parsed: ParseResult = urlsplit(link)
+        parsed: ParseResult = urlsplit(link if "://" in link else f"//{link}")
         return f"{parsed.hostname}{parsed.path}".lower()
 
     except Exception as e:

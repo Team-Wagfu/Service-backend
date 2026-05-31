@@ -5,6 +5,6 @@
 from enum import Enum
 
 # enumeration to mark status of response
-class ReturnStatus(Enum, str):
+class ReturnStatus(str, Enum):
     success="success"
     error="error"
