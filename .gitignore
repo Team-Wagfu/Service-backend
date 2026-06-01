@@ -227,3 +227,7 @@ __marimo__/
 ./tests
 .tests/
 .test/
+
+# ignore vscode settings 
+.vscode
+.vscode/

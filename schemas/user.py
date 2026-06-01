@@ -3,11 +3,12 @@
 from pydantic import BaseModel, Annotated, Field, EmailStr
 from pydantic import model_validator
 
+from core.types import PetOwnerID, FacilitatorID, DocID
 from core.enums import UserType
 
 
-class User(BaseModel):
-    """basic user format"""
+class createUser(BaseModel):
+    """basic user format, used when creating and updating a user"""
 
     name: Annotated[str, Field(..., min_length=3, max_length=50)]
     email: Annotated[EmailStr, Field(...)]
@@ -21,3 +22,11 @@ class User(BaseModel):
         if self.pwd != self.pwd_cnf:
             raise ValueError("passwords do not match")
         return self
+
+
+class readUser(BaseModel):
+    """model when reading a user data"""
+
+    name: str
+    email: EmailStr
+    profile_id: PetOwnerID | FacilitatorID | DocID

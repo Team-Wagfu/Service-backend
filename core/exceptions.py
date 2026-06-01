@@ -36,5 +36,14 @@ class InvalidSignatureException(AppError):
         pass
 
 
+class AuthenticationError(AppError):
+    """auth/reg operation failure"""
+
+    def __init__(self):
+        super().__init__(
+            msg="Authorization Error, please try again"
+        )  # creates AppError instance
+
+
 # export
-__all__ = ["ExpiredTokenException", "InvalidSignatureException"]
+__all__ = ["ExpiredTokenException", "InvalidSignatureException", "AuthenticationError"]
