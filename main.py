@@ -5,7 +5,9 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
 from api.routes.v1.profile import router as profileRouter
+from api.routes.v1.auth import router as authRouter
 from db.engine import validate_engine
+from exception_handler import attach_exception_handlers
 from log import configure_logging
 
 # configure logging
@@ -40,7 +42,9 @@ app = FastAPI(
 )
 
 # attach routers
-app.include_router(profileRouter)
+app.include_router(authRouter, prefix="/api/v1")
+app.include_router(profileRouter, prefix="/api/v1")
+attach_exception_handlers(app)
 
 # export to add middleware and exception handlers
 __all__ = ["app"]

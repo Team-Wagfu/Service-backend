@@ -24,9 +24,18 @@ class createUser(BaseModel):
         return self
 
 
+class loginUser(BaseModel):
+    """credentials used when logging in"""
+
+    email: Annotated[EmailStr, Field(...)]
+    pwd: Annotated[str, Field(..., min_length=8, max_length=100)]
+
+
 class readUser(BaseModel):
     """model when reading a user data"""
 
     name: str
     email: EmailStr
     profile_id: PetOwnerID | FacilitatorID | DocID
+    profile_type: str
+    token: str

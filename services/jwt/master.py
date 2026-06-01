@@ -9,6 +9,7 @@ from typing import Annotated
 from fastapi import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
+from config import config
 from services.jwt.helper import verify_jwt
 
 # setup logging
@@ -26,7 +27,7 @@ async def user_metadata(
 
     logger.debug(f"credentials: {scheme}::{token}")
 
-    return verify_jwt(token)
+    return verify_jwt(token, config.JWT_SECRET)
 
 
 __all__ = ["user_metadata"]
