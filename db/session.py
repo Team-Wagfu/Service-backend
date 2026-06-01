@@ -8,6 +8,3 @@ SessionLocal = sessionmaker(
 )
 
 __all__ = ["SessionLocal"]
-
-# sampleuser.taken@gmail.com
-# RandomWords

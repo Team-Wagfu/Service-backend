@@ -164,7 +164,7 @@ class FacilitatorProfile(Base):
     description = Column(LowString(150), nullable=False, default="")
 
     # address of the facilitator
-    address: Column(AddressJSONB, nullable=False, default={})
+    address = Column(AddressJSONB, nullable=False, default={})
 
     # facility type
     type = Column(

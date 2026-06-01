@@ -1,6 +1,7 @@
 """ """
 
-from pydantic import BaseModel, Annotated, Field, EmailStr
+from typing import Annotated
+from pydantic import BaseModel, Field, EmailStr
 from pydantic import model_validator
 
 from core.types import PetOwnerID, FacilitatorID, DocID

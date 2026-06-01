@@ -19,7 +19,7 @@ class Config(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env.local")
 
     @property
-    def url(self) -> URL:
+    def url_local(self) -> URL:
         """construct and return the URL object"""
         return URL.create(
             drivername="postgresql+psycopg",
@@ -29,6 +29,11 @@ class Config(BaseSettings):
             port=self.DB_PORT,
             database=self.DB_DATABASE,
         )
+
+    @property
+    def url_cloud(self):
+        """return connect string"""
+        return "postgresql://wagfu_admin:1c90zr7gVFWjWSpJFPaQ9Elc16KXZqON@dpg-d8eu9hhkh4rs73cejaig-a.singapore-postgres.render.com/wagfu_data"
 
     # @property
     # def engine(self) -> Engine:

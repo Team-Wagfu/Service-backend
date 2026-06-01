@@ -4,5 +4,31 @@
    ],
    "python.testing.unittestEnabled": false,
    "python.testing.pytestEnabled": true,
-   "editor.tabSize": 4
+   "editor.tabSize": 4,
+   "sqltools.connections": [
+      {
+         "ssh": "Disabled",
+         "previewLimit": 50,
+         "server": "localhost",
+         "driver": "PostgreSQL",
+         "connectString": "postgresql+psycopg://wagfu_admin:cc3d91afe135a4079d3350b972ac510bef2b0b6c70b5fa0dfa8f390196aa5651@localhost:5432/wagfu_db",
+         "name": "Wagfu"
+      },
+      {
+         "pgOptions": {
+            "ssl": {
+               "rejectUnauthorized": true
+            }
+         },
+         "ssh": "Disabled",
+         "previewLimit": 50,
+         "server": "postgresql://wagfu_admin:1c90zr7gVFWjWSpJFPaQ9Elc16KXZqON@dpg-d8eu9hhkh4rs73cejaig-a.singapore-postgres.render.com",
+         "driver": "PostgreSQL",
+         "name": "wagfu render",
+         "connectString": "postgresql://wagfu_admin:1c90zr7gVFWjWSpJFPaQ9Elc16KXZqON@dpg-d8eu9hhkh4rs73cejaig-a.singapore-postgres.render.com/wagfu_data",
+         "database": "wagfu_data",
+         "username": "wagfu_admin",
+         "password": "1c90zr7gVFWjWSpJFPaQ9Elc16KXZqON"
+      }
+   ]
 }

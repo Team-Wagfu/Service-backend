@@ -9,23 +9,31 @@ token are always received through bearer
 """
 
 import logging
+from datetime import datetime, timedelta
 from typing import Annotated
+from sqlalchemy.orm import Session
 from fastapi import APIRouter, Body, status, Depends
 from fastapi.responses import Response
-from datetime import datetime, timedelta
 
 from schemas.user import createUser, readUser
 from services.jwt.master import user_metadata
 from services.jwt.helper import create_jwt
+from db.dependencies import get_db
 
+# configure logging
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 logger.info("Starting /user router")
 router = APIRouter(prefix="/user", tags=["user", "registration"])
 
 
 @router.post("/create", response_model=readUser, status_code=status.HTTP_201_CREATED)
-async def create_user(userData: Annotated[createUser, Body(...)], response: Response):
+async def create_user(
+    userData: Annotated[createUser, Body(...)],
+    response: Response,
+    session: Session = Depends(get_db),
+):
 
     # handle user creation
     logger.debug(f"""creating user:
@@ -64,6 +72,7 @@ async def update_user(
     userData: Annotated[createUser, Body(...)],
     response: Response,
     user=Depends(user_metadata),
+    session: Session = Depends(get_db),
 ):
 
     # see what changed
@@ -80,7 +89,11 @@ async def update_user(
 # since only a logged in user can delete their account
 # the account information shall be identified from the token
 @router.post("/delete", status_code=status.HTTP_200_OK, response_class=Response)
-async def delete_user(response: Response, user=Depends(user_metadata)):
+async def delete_user(
+    response: Response,
+    user=Depends(user_metadata),
+    session: Session = Depends(get_db),
+):
 
     # handle user deletion sequence
 
@@ -105,4 +118,4 @@ async def delete_user(response: Response, user=Depends(user_metadata)):
 async def logout_user(response: Response, user=Depends(user_metadata)):
 
     # handle logout sequence
-    return Response(status_code=200, content={{"message": "OK", "redirect": "/login"}})
+    return Response(status_code=200, content={"message": "OK", "redirect": "/login"})

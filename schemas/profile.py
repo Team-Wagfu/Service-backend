@@ -107,7 +107,7 @@ class ReadDoctorProfile(ReadConfig):
 class ReadFacilitatorProfile(ReadConfig):
     name: str
     description: Annotated[str, Field(default="")]
-    links: Annotated[FacilitatorLinks]
+    links: Annotated[FacilitatorLinks, Field(default_factory=FacilitatorLinks)]
 
 
 # when the user wants to edit their profile

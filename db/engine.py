@@ -18,7 +18,7 @@ logger = logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
 
 engine = create_engine(
-    config.url,
+    config.url_cloud,
     pool_size=10,
     max_overflow=20,
     pool_timeout=30,
@@ -34,10 +34,13 @@ engine = create_engine(
 Base.metadata.create_all(
     bind=engine,
     tables=[
+        # user tables
         User.__table__,
+        # profile tables
         DoctorProfile.__table__,
         PetOwnerProfile.__table__,
         FacilitatorProfile.__table__,
+        # pets tables
     ],
 )
 

@@ -10,6 +10,7 @@ functional notes for corresponding handling party:
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 
 from main import app
@@ -82,4 +83,20 @@ def handle_validation_error(req: Request, exc: ValidationError):
     """handle validation errors and block data leak"""
     return JSONResponse(
         status_code=500, content={"message": "Unable to serve at the moment"}
+    )
+
+
+# data input error
+@app.exception_handler(RequestValidationError)
+def handle_request_validation_error(req: Request, exc: RequestValidationError):
+    """handle validation error before request processing"""
+    return JSONResponse(status_code=422, content={"message": "Unprocessable content"})
+
+
+# unhandled exceptions
+@app.exception_handler(Exception)
+def handler_unknown_error(req: Request, exc: Exception):
+    """handle unknown exception"""
+    return JSONResponse(
+        status_code=500, content={"message": "unable to serve at the moment"}
     )
