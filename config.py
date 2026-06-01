@@ -33,7 +33,7 @@ class Config(BaseSettings):
     @property
     def url_cloud(self):
         """return connect string"""
-        return "postgresql://wagfu_admin:1c90zr7gVFWjWSpJFPaQ9Elc16KXZqON@dpg-d8eu9hhkh4rs73cejaig-a.singapore-postgres.render.com/wagfu_data"
+        return "postgresql+psycopg://wagfu_admin:1c90zr7gVFWjWSpJFPaQ9Elc16KXZqON@dpg-d8eu9hhkh4rs73cejaig-a.singapore-postgres.render.com/wagfu_data"
 
     # @property
     # def engine(self) -> Engine:
