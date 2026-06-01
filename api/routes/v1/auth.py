@@ -37,11 +37,13 @@ async def create_user(userData: Annotated[createUser, Body(...)], response: Resp
     # token creation and profile_id grepping
 
     profile_id: str = ""  # profile id here
+    profile_type: str = ""
 
     token: str = create_jwt(
         {
             "name": userData.name,
             "expiry": datetime.now() + timedelta(days=7),  # 7 day window
+            "profile_type": profile_type,
             "profile_id": profile_id,
         }
     )
@@ -57,6 +59,26 @@ async def create_user(userData: Annotated[createUser, Body(...)], response: Resp
     return readUser(name=userData.name, email=userData.email, profile_id=profile_id)
 
 
+@router.post("/update", response_model=readUser, status_code=status.HTTP_200_OK)
+async def update_user(
+    userData: Annotated[createUser, Body(...)],
+    response: Response,
+    user=Depends(user_metadata),
+):
+
+    # pull from db
+
+    # see what changed
+    # update based on it
+
+    # return the new token
+    return readUser(
+        name=userData.name,
+        email=userData.email,
+        profile_id=user.profile_id,  # profile id doesnt change
+    )
+
+
 # since only a logged in user can delete their account
 # the account information shall be identified from the token
 @router.post("/delete", status_code=status.HTTP_200_OK, response_class=Response)
@@ -66,3 +88,9 @@ async def delete_user(response: Response, user=Depends(user_metadata)):
     logger.debug(f"""deleting user:
         [+] username {user}
     """)
+
+    response.delete_cookie(
+        "Bearer Token",
+    )
+
+    return Response(status_code=200, content={"message": "OK", "redirect": "/login"})
