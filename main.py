@@ -40,6 +40,13 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+
+# add health check
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
+
 # attach routers
 logger.debug("Attached profile router")
 app.include_router(profileRouter)
