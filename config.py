@@ -2,6 +2,7 @@
 # common configuration and settings, fastapi friendly
 # Update 12 May 2026
 
+from os import getenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -13,10 +14,10 @@ class Config(BaseSettings):
     DB_HOST: str = "localhost"
     DB_PORT: int = 5432
     DB_DATABASE: str = "wagfu_db"
-    DB_PASSWORD: str  # will be populated by .env
-    JWT_SECRET: str  # will be populated by .env
+    DB_PASSWORD: str = ""  # will be populated by .env
+    JWT_SECRET: str = getenv("JWT_SECRET")  # will be populated by .env
 
-    model_config = SettingsConfigDict(env_file=".env.local")
+    # model_config = SettingsConfigDict(env_file=".env.local")
 
     @property
     def url_local(self) -> URL:
