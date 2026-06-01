@@ -36,13 +36,13 @@ async def create_user(userData: Annotated[createUser, Body(...)], response: Resp
 
     # token creation and profile_id grepping
 
+    profile_type: str = userData.type
     profile_id: str = ""  # profile id here
-    profile_type: str = ""
 
     token: str = create_jwt(
         {
             "name": userData.name,
-            "expiry": datetime.now() + timedelta(days=7),  # 7 day window
+            "exp": datetime.now() + timedelta(days=7),  # 7 day window
             "profile_type": profile_type,
             "profile_id": profile_id,
         }
@@ -66,8 +66,6 @@ async def update_user(
     user=Depends(user_metadata),
 ):
 
-    # pull from db
-
     # see what changed
     # update based on it
 
@@ -85,6 +83,12 @@ async def update_user(
 async def delete_user(response: Response, user=Depends(user_metadata)):
 
     # handle user deletion sequence
+
+    # remove token
+    # send redirect to /login
+    # delet profile
+    # delete user
+
     logger.debug(f"""deleting user:
         [+] username {user}
     """)
@@ -94,3 +98,11 @@ async def delete_user(response: Response, user=Depends(user_metadata)):
     )
 
     return Response(status_code=200, content={"message": "OK", "redirect": "/login"})
+
+
+# logout
+@router.post("/logout", status_code=status.HTTP_200_OK, response_class=Response)
+async def logout_user(response: Response, user=Depends(user_metadata)):
+
+    # handle logout sequence
+    return Response(status_code=200, content={{"message": "OK", "redirect": "/login"}})

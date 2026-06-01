@@ -6,6 +6,11 @@ engine creation and instance management
 import logging
 from sqlalchemy import create_engine, text
 
+from models.base import Base
+from models.user import User
+from models.profile import DoctorProfile, PetOwnerProfile, FacilitatorProfile
+from models.pets import Pets, MedicalRecords, Vaccination
+
 from config import config
 
 # setup logging
@@ -22,6 +27,18 @@ engine = create_engine(
     echo=False,
     logging_name="MainEngine",
     pool_logging_name="MainPool",
+)
+
+
+# create the required tables
+Base.metadata.create_all(
+    bind=engine,
+    tables=[
+        User.__table__,
+        DoctorProfile.__table__,
+        PetOwnerProfile.__table__,
+        FacilitatorProfile.__table__,
+    ],
 )
 
 
