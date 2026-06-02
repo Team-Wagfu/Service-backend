@@ -27,7 +27,9 @@ def b64_urldecode(data: str) -> bytes:
 
 def sign(data: str, secret: str = config.JWT_SECRET) -> str:
     """sign data with the provided key"""
-    signature = hmac.new(secret, data.encode(), hashlib.sha256).digest()
+    signature = hmac.new(
+        bytes(secret, encoding="utf-8"), data.encode(), hashlib.sha256
+    ).digest()
 
     return b64_urlencode(signature)
 

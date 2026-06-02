@@ -18,7 +18,7 @@ logger = logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
 
 engine = create_engine(
-    config.url_cloud,
+    config.url,
     pool_size=10,
     max_overflow=20,
     pool_timeout=30,

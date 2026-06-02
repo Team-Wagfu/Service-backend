@@ -9,7 +9,7 @@ token are always received through bearer
 """
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Body, status, Depends
@@ -36,33 +36,45 @@ async def create_user(
 ):
 
     # handle user creation
-    logger.debug(f"""creating user:
-        [+] username    {userData.name}
-        [+] email       {userData.email}
-        [*] passwd      {userData.pwd}
-    """)
+    logger.debug(
+        """creating user:
+        [+] username    %s
+        [+] email       %s
+        [*] passwd      %s
+    """,
+        userData.name,
+        userData.email,
+        userData.pwd,
+    )
 
     # token creation and profile_id grepping
 
     profile_type: str = userData.type
     profile_id: str = ""  # profile id here
 
+    now = datetime.now(timezone.utc)
+
     token: str = create_jwt(
         {
             "name": userData.name,
-            "exp": datetime.now() + timedelta(days=7),  # 7 day window
-            "profile_type": profile_type,
+            "exp": int((now + timedelta(days=7)).timestamp()),
+            "iat": int(now.timestamp()),
+            "role": profile_type,  # fac, doc, own
             "profile_id": profile_id,
         }
     )
-    logger.debug(f"creating token {token}")
+    logger.debug("creating token %s", token)
 
-    logger.debug(f"""data:
-        [+] token       {token}
-        [+] profile_id  {profile_id}
-    """)
+    logger.debug(
+        """data:
+        [+] token       %s
+        [+] profile_id  %s
+    """,
+        token,
+        profile_id,
+    )
 
-    response.set_cookie(key="Bearer Token", value=token, httponly=True)
+    response.set_cookie(key="Bearer", value=token, httponly=True)
 
     return readUser(name=userData.name, email=userData.email, profile_id=profile_id)
 
@@ -107,7 +119,7 @@ async def delete_user(
     """)
 
     response.delete_cookie(
-        "Bearer Token",
+        "Bearer",
     )
 
     return Response(status_code=200, content={"message": "OK", "redirect": "/login"})

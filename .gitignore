@@ -231,3 +231,7 @@ __marimo__/
 # ignore vscode settings 
 .vscode
 .vscode/
+
+# ignore sql scripts
+.sql
+*.sql

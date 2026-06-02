@@ -31,10 +31,20 @@ class Config(BaseSettings):
             database=self.DB_DATABASE,
         )
 
+    # TODO:
+    # remove hardcoded connect string
     @property
     def url_cloud(self):
         """return connect string"""
         return "postgresql+psycopg://wagfu_admin:1c90zr7gVFWjWSpJFPaQ9Elc16KXZqON@dpg-d8eu9hhkh4rs73cejaig-a.singapore-postgres.render.com/wagfu_data"
+
+    @property
+    def url(self):
+        """return the appropriate type of url"""
+        if getenv("IS_CLOUD", 0):
+            return self.url_cloud
+        else:
+            return self.url_local
 
     # @property
     # def engine(self) -> Engine:

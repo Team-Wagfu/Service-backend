@@ -18,6 +18,7 @@ from core.exceptions import (
     InvalidSignatureException,
     ExpiredTokenException,
     AuthenticationError,
+    UserExistsError,
 )
 
 
@@ -58,6 +59,15 @@ def handler_expired_token_exception(request: Request, exc: ExpiredTokenException
             "message": "Token expired, please re-authenticate",
             "redirect": "/login",
         },
+    )
+
+
+@app.exception_handler(UserExistsError)
+def handle_user_exists_error(request: Request, exc: UserExistsError):
+    """return no ok status"""
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"message": "Failed to register", "redirect": "/login"},
     )
 
 

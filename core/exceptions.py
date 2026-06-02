@@ -45,5 +45,17 @@ class AuthenticationError(AppError):
         )  # creates AppError instance
 
 
+class UserExistsError(AppError):
+    """user already exists"""
+
+    def __init__(self):
+        super().__init__(msg="Failed auth", status_code=401)
+
+
 # export
-__all__ = ["ExpiredTokenException", "InvalidSignatureException", "AuthenticationError"]
+__all__ = [
+    "ExpiredTokenException",
+    "InvalidSignatureException",
+    "AuthenticationError",
+    "UserExistsError",
+]

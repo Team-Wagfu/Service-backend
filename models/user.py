@@ -71,6 +71,8 @@ class User(Base):
         ),  # updated through orm will only invoke this, SERVER UPDATES ARE UN-MONITORED
     )
 
+    password_hash = Column(String, nullable=False)
+
     # the account is marked as active by default and upon deletion(deactivation),
     # it is marked as False,
     # and after the restoration period, the record is removed cascadingly
