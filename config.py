@@ -2,57 +2,52 @@
 # common configuration and settings, fastapi friendly
 # Update 12 May 2026
 
+# load cloud or local configuration based on the IS_CLOUD env
+
 from os import getenv
+from typing import Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy import URL
+from sqlalchemy import URL, make_url
 
 
 class Config(BaseSettings):
-    """common configuration class"""
+    """Settings instance, holds all configuration values"""
 
-    DB_USERNAME: str = "wagfu_admin"
-    DB_HOST: str = "localhost"
-    DB_PORT: int = 5432
-    DB_DATABASE: str = "wagfu_db"
-    DB_PASSWORD: str = ""  # will be populated by .env
-    JWT_SECRET: str = getenv("JWT_SECRET")  # will be populated by .env
+    # db configurations
+    DB_DRIVERNAME: Optional[str] = None
+    DB_USERNAME: Optional[str] = None
+    DB_HOST: Optional[str] = None
+    DB_PORT: Optional[int] = None
+    DB_DATABASE: Optional[str] = None
+    DB_PASSWORD: Optional[str] = None
+    DB_INTERNAL_STRING: Optional[str] = None
 
-    # model_config = SettingsConfigDict(env_file=".env.local")
+    # security
+    JWT_SECRET: Optional[str] = None
 
-    @property
-    def url_local(self) -> URL:
-        """construct and return the URL object"""
-        return URL.create(
-            drivername="postgresql+psycopg",
-            username=self.DB_USERNAME,
-            password=self.DB_PASSWORD,
-            host=self.DB_HOST,
-            port=self.DB_PORT,
-            database=self.DB_DATABASE,
-        )
+    # path configurations
+    DATA_ROOT: Optional[str] = None
+    PROJECT_ROOT: Optional[str] = None
 
-    # TODO:
-    # remove hardcoded connect string
-    @property
-    def url_cloud(self):
-        """return connect string"""
-        return "postgresql+psycopg://wagfu_admin:1c90zr7gVFWjWSpJFPaQ9Elc16KXZqON@dpg-d8eu9hhkh4rs73cejaig-a.singapore-postgres.render.com/wagfu_data"
+    model_config = SettingsConfigDict(
+        env_file=".env.prod" if int(getenv("IS_CLOUD", "0")) else ".env.local"
+    )
 
     @property
     def url(self):
         """return the appropriate type of url"""
-        if getenv("IS_CLOUD", 0):
-            return self.url_cloud
+        if int(getenv("IS_CLOUD", "0")):
+            url = make_url(self.DB_INTERNAL_STRING)
         else:
-            return self.url_local
-
-    # @property
-    # def engine(self) -> Engine:
-    #     """return the engine object"""
-    #     return create_engine(
-    #         self.url,
-    #         echo=True,
-    #     )
+            url = URL.create(
+                drivername="postgresql+psycopg",
+                username=self.DB_USERNAME,
+                password=self.DB_PASSWORD,
+                host=self.DB_HOST,
+                port=self.DB_PORT,
+                database=self.DB_DATABASE,
+            )
+        return url
 
 
 config = Config()

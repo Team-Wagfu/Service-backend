@@ -1,6 +1,21 @@
 # Wagfu Service Backend
 # Project configuration
 
+[project]
+name="Wagfu-API"
+version="1.0.0"
+description="healthcare system API"
+readme="README.md"
+requires-python=">=3.11"
+authors=[
+  {name = "Carbonite13", email="aconitium@proton.me"}
+]
+keywords=["fastapi", "postgresql", "render"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Framework :: FastAPI",
+]
+
 [tool.pytest.ini_options]
 # test directory
 testpaths = ["tests"]

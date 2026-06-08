@@ -2,7 +2,6 @@
 CRUD operations for user creation/deletion/updation
 
 NO COMMITS IN CRUD
-
 """
 
 from random import randint
