@@ -1,22 +1,14 @@
 # Wagfu service backend
 # pydantic models handling request and response of notification and alerts
-# Updated 26 Apr 2026
+# Updated 10 Jun 2026
 
-# ---------------------------------------------------------------------#
-# ALL MODELS ARE IN DEBUG CONFIGURATION, NEED TO SWITCH TO PRODUCTION #
-# ---------------------------------------------------------------------#
-
-from pydantic import (
-    BaseModel,
-    Field,
-    ConfigDict,
-    model_validator,
-    field_validator,
-)
-from typing import Annotated, TypedDict
-from typing_extensions import Self
-import datetime
+from datetime import date
 from enum import Enum
+from typing import Annotated, Optional
+from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from typing_extensions import Self
 
 from schemas.enums import ReturnStatus
 
@@ -25,13 +17,10 @@ __all__ = [
     "NotificationList",
     "NotificationAckAction",
     "NotificationAck",
+    "SendNotification",
 ]
 
-# reponse model
 
-
-# configuration base class for all the subsequent response classes
-# !! DEBUG CODE !!
 class NotificationModel(BaseModel):
     model_config = ConfigDict(
         extra="forbid", use_enum_values=True, validation_error_cause=True
@@ -51,20 +40,13 @@ class NotificationModel(BaseModel):
             description="return status whether the its successful response or error",
         ),
     ]
-    # _reason: Annotated[str, Field(default='', description="reason for the error, if any")]
 
 
-# data dict for notification
-class Notification(TypedDict):
-    id: Annotated[
-        int,
-        Field(
-            default=0, description="identification for the notification, local to doc"
-        ),
-    ]
-
-    issue_time: Annotated[datetime.date, Field(default_factory=datetime.date)]
-    content: Annotated[int, Field(..., min_length=10, max_length=50)]
+class Notification(BaseModel):
+    id: Annotated[int, Field(..., description="notification record id")]
+    poll_from: Annotated[UUID, Field(..., description="sender user id")]
+    issue_time: Annotated[date, Field(default_factory=date.today)]
+    content: Annotated[str, Field(..., min_length=1, max_length=500)]
     priority: Annotated[int, Field(default=5, ge=0, le=5)]
     read: Annotated[
         bool,
@@ -74,41 +56,39 @@ class Notification(TypedDict):
         ),
     ]
 
+    model_config = ConfigDict(extra="forbid", use_enum_values=True)
 
-# return the list of all alerts or notifications for the doctor
+
 class NotificationList(NotificationModel):
     data: Annotated[
-        list[Notification],  # list of notifications of the above specified format
-        Field(default=list, description="list of norification dict object"),
+        list[Notification],
+        Field(default_factory=list, description="list of notification objects"),
     ]
 
     @model_validator(mode="after")
     def validator_count(self) -> Self:
-        if self.count != self.data.__len__():
+        if self.count != len(self.data):
             raise ValueError("inconsistency in number of notifications")
         return self
 
     @field_validator("data")
     @classmethod
-    def validator_sort_notifications(cls, l: list[Notification]) -> list[Notification]:
-        # sort the notification in the decreasing order of priority
+    def validator_sort_notifications(cls, items: list[Notification]) -> list[Notification]:
         return sorted(
-            l,
+            items,
             key=lambda notification: (
-                notification["issue_time"],
-                notification["priority"],
+                -notification.priority,
+                notification.issue_time,
             ),
         )
 
 
-# notification acknowledgement action enumeration
 class NotificationAckAction(str, Enum):
-    ack = "ack"  # acknowledge, mark as read, keep the Notifications
-    delete = "delete"  # delete, status insignificant
-    ack_del = "ack-del"  # ack and delete (fallback)
+    ack = "ack"
+    delete = "delete"
+    ack_del = "ack-del"
 
 
-# notification read acknowledgement request (POST)
 class NotificationAck(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
@@ -117,6 +97,16 @@ class NotificationAck(BaseModel):
     )
 
     notification_id: Annotated[
-        int, Field(default=0, description="id of the notification")
+        int, Field(..., description="id of the notification")
     ]
     action: Annotated[NotificationAckAction, Field(...)]
+
+
+class SendNotification(BaseModel):
+    """request body for dispatching a notification to another user"""
+
+    recipient_id: Annotated[UUID, Field(..., description="target user uuid")]
+    content: Annotated[str, Field(..., min_length=1, max_length=500)]
+    priority: Annotated[int, Field(default=5, ge=0, le=5)]
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)

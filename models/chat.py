@@ -70,7 +70,7 @@ class Chats(Base):
     )
 
     poll_chat_info = relationship(
-        "PollChatNotifications", back_populates="chat_chat", uselist=False
+        "PollChatNotification", back_populates="chat", uselist=False
     )
 
 

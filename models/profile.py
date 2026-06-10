@@ -123,6 +123,7 @@ class DoctorProfile(Base):
     )
 
     user = relationship("User", back_populates="doctor_profile", uselist=False)
+    
 
 
 class AdminProfile(Base):

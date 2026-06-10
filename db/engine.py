@@ -10,6 +10,7 @@ from models.base import Base
 from models.user import User
 from models.profile import DoctorProfile, PetOwnerProfile, FacilitatorProfile
 from models.pets import Pets, MedicalRecords, Vaccination
+from models.polls import Polls, PollNotification, PollCallNotification, PollChatNotification
 
 from config import config
 
@@ -41,6 +42,14 @@ Base.metadata.create_all(
         PetOwnerProfile.__table__,
         FacilitatorProfile.__table__,
         # pets tables
+        Pets.__table__,
+        MedicalRecords.__table__,
+        Vaccination.__table__,
+        # polling tables
+        Polls.__table__,
+        PollNotification.__table__,
+        PollCallNotification.__table__,
+        PollChatNotification.__table__,
     ],
 )
 

@@ -19,6 +19,18 @@ from core.exceptions import (
     ExpiredTokenException,
     AuthenticationError,
     UserExistsError,
+    PetError,
+    PetNotFoundError,
+    PetOwnerProfileError,
+    PetAccessError,
+    NotificationError,
+    NotificationNotFoundError,
+    NotificationAccessError,
+    NotificationUserError,
+    PetAddonError,
+    PetAddonAccessError,
+    VaccinationNotFoundError,
+    MedicalRecordNotFoundError,
 )
 
 
@@ -69,6 +81,70 @@ def handle_user_exists_error(request: Request, exc: UserExistsError):
         status_code=exc.status_code,
         content={"message": "Failed to register", "redirect": "/login"},
     )
+
+
+@app.exception_handler(PetError)
+def handle_pet_error(request: Request, exc: PetError):
+    return JSONResponse(status_code=exc.status_code, content={"message": exc.msg})
+
+
+@app.exception_handler(PetNotFoundError)
+def handle_pet_not_found_error(request: Request, exc: PetNotFoundError):
+    return JSONResponse(status_code=exc.status_code, content={"message": exc.msg})
+
+
+@app.exception_handler(PetOwnerProfileError)
+def handle_pet_owner_profile_error(request: Request, exc: PetOwnerProfileError):
+    return JSONResponse(status_code=exc.status_code, content={"message": exc.msg})
+
+
+@app.exception_handler(PetAccessError)
+def handle_pet_access_error(request: Request, exc: PetAccessError):
+    return JSONResponse(status_code=exc.status_code, content={"message": exc.msg})
+
+
+@app.exception_handler(NotificationError)
+def handle_notification_error(request: Request, exc: NotificationError):
+    return JSONResponse(status_code=exc.status_code, content={"message": exc.msg})
+
+
+@app.exception_handler(NotificationNotFoundError)
+def handle_notification_not_found_error(request: Request, exc: NotificationNotFoundError):
+    return JSONResponse(status_code=exc.status_code, content={"message": exc.msg})
+
+
+@app.exception_handler(NotificationAccessError)
+def handle_notification_access_error(request: Request, exc: NotificationAccessError):
+    return JSONResponse(status_code=exc.status_code, content={"message": exc.msg})
+
+
+@app.exception_handler(NotificationUserError)
+def handle_notification_user_error(request: Request, exc: NotificationUserError):
+    return JSONResponse(status_code=exc.status_code, content={"message": exc.msg})
+
+
+@app.exception_handler(PetAddonError)
+def handle_pet_addon_error(request: Request, exc: PetAddonError):
+    return JSONResponse(status_code=exc.status_code, content={"message": exc.msg})
+
+
+@app.exception_handler(PetAddonAccessError)
+def handle_pet_addon_access_error(request: Request, exc: PetAddonAccessError):
+    return JSONResponse(status_code=exc.status_code, content={"message": exc.msg})
+
+
+@app.exception_handler(VaccinationNotFoundError)
+def handle_vaccination_not_found_error(
+    request: Request, exc: VaccinationNotFoundError
+):
+    return JSONResponse(status_code=exc.status_code, content={"message": exc.msg})
+
+
+@app.exception_handler(MedicalRecordNotFoundError)
+def handle_medical_record_not_found_error(
+    request: Request, exc: MedicalRecordNotFoundError
+):
+    return JSONResponse(status_code=exc.status_code, content={"message": exc.msg})
 
 
 # handle programmatic errors gracefully

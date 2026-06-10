@@ -25,7 +25,10 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 logger.info("Starting /user router")
-router = APIRouter(prefix="/user", tags=["user", "registration"])
+router = APIRouter(
+    prefix="/user",
+    tags=["user"],
+)
 
 
 @router.post("/create", response_model=readUser, status_code=status.HTTP_201_CREATED)
@@ -75,7 +78,6 @@ async def create_user(
     )
 
     response.set_cookie(key="Bearer", value=token, httponly=True)
-
     return readUser(name=userData.name, email=userData.email, profile_id=profile_id)
 
 
@@ -100,7 +102,7 @@ async def update_user(
 
 # since only a logged in user can delete their account
 # the account information shall be identified from the token
-@router.post("/delete", status_code=status.HTTP_200_OK, response_class=Response)
+@router.delete("/delete", status_code=status.HTTP_200_OK, response_class=Response)
 async def delete_user(
     response: Response,
     user=Depends(user_metadata),
@@ -114,9 +116,11 @@ async def delete_user(
     # delet profile
     # delete user
 
-    logger.debug(f"""deleting user:
-        [+] username {user}
-    """)
+    logger.debug(
+        """deleting user:
+        [+] username %s""",
+        user,
+    )
 
     response.delete_cookie(
         "Bearer",

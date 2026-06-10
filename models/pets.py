@@ -5,7 +5,7 @@
 from datetime import date, datetime
 
 from sqlalchemy.orm import relationship, validates
-from sqlalchemy import Column, Enum, ForeignKey
+from sqlalchemy import Column, Enum, ForeignKey, PrimaryKeyConstraint
 from sqlalchemy import Date, Boolean
 
 from models.base import Base
@@ -66,10 +66,13 @@ class Vaccination(Base):
 
     __tablename__ = "vaccinations"
 
-    # id of the pet to whic hteh record belongs to
-    pet_id = Column(UpString, ForeignKey("pets.pet_id"), primary_key=True)
+    pet_id = Column(
+        UpString(15),
+        ForeignKey("pets.pet_id"),
+        nullable=False,
+        index=True,
+    )
 
-    # name of the vaccination
     vaccine = Column(LowString, nullable=False)
 
     # date by which the vaccination should be taken
@@ -79,11 +82,8 @@ class Vaccination(Base):
     # not nullable, its either true or false
     status = Column(Boolean, default=False, nullable=False)
 
-    # vaccinated at, the clinic id, identifying clinic
-    # null in case of vaccination not acquired yet
-    vaccinated_at = Column(
-        LowString, ForeignKey("clinic.id"), nullable=True
-    )  # Facility name
+    # clinic or facility id; nullable until vaccination is administered
+    vaccinated_at = Column(LowString, nullable=True)
 
     # vaccinated by, identified by doctor id
     # null in case of not acquired yet
@@ -95,9 +95,16 @@ class Vaccination(Base):
 
     # id of the medical report for getting detailed insdight
     # into further details of the medication
-    report = Column(UpString)  # Medical report ID
+    report = Column(UpString)
 
-    pet = relationship("pets", back_populates="vaccination")
+    pet = relationship("Pets", back_populates="vaccination")
+    doctor = relationship(
+        "DoctorProfile",
+        foreign_keys=[vaccinated_by],
+        primaryjoin="Vaccination.vaccinated_by == DoctorProfile.id",
+    )
+
+    __table_args__ = (PrimaryKeyConstraint("pet_id", "vaccine"),)
 
 
 class MedicalRecords(Base):
@@ -112,10 +119,11 @@ class MedicalRecords(Base):
         nullable=False,
     )
 
-    # id of the pet to which the medical record is concerned to
     pet_id = Column(
         UpString(15),
+        ForeignKey("pets.pet_id"),
         nullable=False,
+        index=True,
     )
 
     # corresponding doctor who handled the medication
@@ -130,3 +138,8 @@ class MedicalRecords(Base):
     date = Column(Date, nullable=False, default=date.today)
 
     pet = relationship("Pets", back_populates="medical_records")
+    doctor = relationship(
+        "DoctorProfile",
+        foreign_keys=[doctor_id],
+        primaryjoin="MedicalRecords.doctor_id == DoctorProfile.id",
+    )

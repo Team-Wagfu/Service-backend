@@ -2,13 +2,15 @@
 Polling system schematics
 """
 
-from sqlalchemy import Column, Enum, ForeignKey
+from datetime import date
+
+from sqlalchemy import Column, Enum, ForeignKey, PrimaryKeyConstraint, Boolean, Date
 from sqlalchemy.dialects.postgresql import UUID, ARRAY
 from sqlalchemy.orm import relationship
 
-from models.types import UInteger
+from models.types import UInteger, LowString
 
-from models.base import Base  # unregister it for the time being
+from models.base import Base
 from core.enums import PollType
 
 
@@ -22,7 +24,6 @@ class Polls(Base):
     poll_from = Column(
         UUID(as_uuid=True),
         ForeignKey("users.user_id"),
-        primary_key=True,
         index=True,
         nullable=False,
     )
@@ -31,13 +32,11 @@ class Polls(Base):
     poll_to = Column(
         UUID(as_uuid=True),
         ForeignKey("users.user_id"),
-        primary_key=True,
         index=True,
         nullable=False,
     )
 
     # notification lookup and fetch priority
-    # 1 - call, 2 - chat, 3 - notification
     poll_type = Column(
         Enum(PollType),
         nullable=False,
@@ -53,7 +52,11 @@ class Polls(Base):
     poll_id = Column(
         ARRAY(UInteger),
         nullable=False,
-        default=[],
+        default=list,
+    )
+
+    __table_args__ = (
+        PrimaryKeyConstraint("poll_from", "poll_to", "poll_type"),
     )
 
 
@@ -77,16 +80,16 @@ class PollChatNotification(Base):
 
     __tablename__ = "polls_chat"
 
-    # unique identified for the record
     id = Column(
         UInteger,
+        autoincrement=True,
         nullable=False,
         primary_key=True,
         index=True,
     )
 
     chat_id = Column(
-        UUID(as_uuid=True),  # 32 byte unique key identifying a chat between 2 users
+        UUID(as_uuid=True),
         nullable=False,
     )
 
@@ -101,7 +104,27 @@ class PollNotification(Base):
 
     id = Column(
         UInteger,
+        autoincrement=True,
         nullable=False,
         primary_key=True,
         index=True,
     )
+
+    poll_from = Column(
+        UUID(as_uuid=True),
+        ForeignKey("users.user_id"),
+        nullable=False,
+        index=True,
+    )
+
+    poll_to = Column(
+        UUID(as_uuid=True),
+        ForeignKey("users.user_id"),
+        nullable=False,
+        index=True,
+    )
+
+    content = Column(LowString(500), nullable=False)
+    priority = Column(UInteger, nullable=False, default=5)
+    read = Column(Boolean, nullable=False, default=False)
+    issue_time = Column(Date, nullable=False, default=date.today)

@@ -6,6 +6,9 @@ from contextlib import asynccontextmanager
 
 from api.routes.v1.profile import router as profileRouter
 from api.routes.v1.auth import router as authRouter
+from api.routes.v1.pets import router as petRouter
+from api.routes.v1.polling import router as pollRouter
+from api.routes.v1.pet_addons import router as petAddonRouter
 from db.engine import validate_engine
 from log import configure_logging
 
@@ -53,6 +56,17 @@ app.include_router(profileRouter)
 
 logger.debug("Attached auth router")
 app.include_router(authRouter)
+
+logger.debug("Attached pet router")
+app.include_router(petRouter)
+
+logger.debug("Attached poll router")
+app.include_router(pollRouter)
+
+logger.debug("Attached pet addon router")
+app.include_router(petAddonRouter)
+
+import exception_handler  # noqa: F401,E402 — register global exception handlers
 
 # export to add middleware and exception handlers
 __all__ = ["app"]

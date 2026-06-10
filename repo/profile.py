@@ -84,7 +84,6 @@ class Profile:
         data: FacilitatorProfile | PetOwnerProfile | DoctorProfile,
     ):
         """handle profile updates"""
-        pass
 
 
 __all__ = ["Profile"]

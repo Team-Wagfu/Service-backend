@@ -114,7 +114,7 @@ SPECIES_BREED_COLOR_MAP = {
         "Russian Blue": ["Solid Blue-Grey with Silver Tipping"],
         "Birman": ["Seal Point", "Blue Point", "White Paws"],
     },
-    Animals.BRD: {
+    Animals.BIRD: {
         "Budgerigar (Budgie) [Pet]": [
             "Green",
             "Yellow",
@@ -145,7 +145,7 @@ SPECIES_BREED_COLOR_MAP = {
         "Nile Tilapia [Food]": ["Silver-Grey", "Darker Grey"],
         "Rainbow Trout [Food]": ["Silver", "Multi-colored Speckled"],
     },
-    Animals.RBT: {
+    Animals.RABBIT: {
         "Angora (British/Russian/French) [Wool]": ["Pure White"],
         "Angora (German) [Wool]": ["Pure White"],
         "Californian [Meat/Fur]": [
@@ -164,7 +164,7 @@ SPECIES_BREED_COLOR_MAP = {
         "Soviet Chinchilla [Meat/Fur]": ["Blue-Grey with White Belly"],
         "White Giant [Meat/Fur]": ["Pure White (Red Eyes)"],
     },
-    Animals.OTH: {
+    Animals.OTHER: {
         "Hamster": ["Golden", "White", "Grey"],
         "Guinea Pig": ["White", "Black", "Brown", "Tri-color"],
     },

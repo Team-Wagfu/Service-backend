@@ -22,39 +22,62 @@ structure should represent
 The backend service is structured into the following folders:
 
 ```
-./Wagfu-Backend-Service
+./
 │
-├── app/
-│   ├── api/
-│   │   ├── endpoints/
-│   │   │   ├── user.py
-│   │   │   └── auth.py
-│   │   ├── routers/
-│   │   │   ├── user.py
-│   │   │   └── auth.py
-│   │   ├── dependencies/
-│   │   │   ├── user.py
-│   │   │   └── auth.py
-│   │   ├── schemas/
-│   │   │   ├── user.py
-│   │   │   └── auth.py
-│   │   └── main.py
-│   ├── core/
-│   │   ├── config.py
-│   │   ├── database.py
-│   │   └── security.py
-│   ├── models/
-│   │   ├── user.py
-│   │   └── auth.py
-│   ├── services/
-│   │   ├── user.py
-│   │   └── auth.py
-│   └── main.py
+├── api/
+│   └── routes/
+│       └── v1/
+│           ├── auth.py
+│           ├── user.py
+│           ├── pet.py
+│           ├── pet_addons.py
+│           └── exception_handler.py
+│
+├── core/
+│   ├── exceptions.py
+│   └── security.py
+│
+├── db/
+│   ├── dependencies.py
+│   ├── session.py
+│   └── migrations/
+│
+├── models/
+│   ├── user.py
+│   ├── pets.py
+│   └── doctor_profile.py
+│
+├── repo/
+│   ├── user.py
+│   ├── pet.py
+│   ├── vaccination.py
+│   └── medical_record.py
+│
+├── schemas/
+│   ├── user.py
+│   ├── pets.py
+│   ├── pet_addons.py
+│   └── doctor.py
+│
+├── services/
+│   ├── jwt/
+│   │   ├── helper.py
+│   │   └── master.py
+│   ├── pet.py
+│   ├── user.py
+│   └── pet_addons.py
+│
 ├── tests/
 │   ├── test_user.py
-│   └── test_auth.py
+│   ├── test_auth.py
+│   ├── test_pet.py
+│   ├── test_pet_addons.py
+│   └── test_medical_record.py
+│
+├── alembic.ini
 ├── README.md
-└── requirements.txt
+├── requirements.txt
+└── main.py
 ```
 
 ---
@@ -149,10 +172,6 @@ Handle unit tests and integrations tests.
 
 - unit tests, services and repo
 - integrations tests, api endpoints
-
-### docker/
-
-docker-related configurations and scripts
 
 # Request Flow
 

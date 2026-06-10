@@ -222,6 +222,9 @@ __marimo__/
 # ignore code workspace file
 *.code-workspace
 
+# swap files
+*.swp
+
 # ignore test files and directories
 ./test
 ./tests
@@ -235,3 +238,5 @@ __marimo__/
 # ignore sql scripts
 .sql
 *.sql
+schemas/raw/*
+schemas/raw

@@ -2,27 +2,46 @@
 Pydantic models for sending and receiving polling request and response
 """
 
-from pydantic import Field, Annotated, BaseModel, ConfigDict
+from typing import Annotated, Optional
+from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict, Field
+
 from core.enums import PollType
+from schemas.enums import ReturnStatus
 
 
-class Base(BaseModel):
+class PollBase(BaseModel):
     """base configuration class for all the subsequent polling classes"""
 
-    model_config = ConfigDict(extra="fobid", str_to_lower=True, use_enum_value=True)
-
-    poll_type: Annotated[PollType, Field(PollType.notification)]
+    model_config = ConfigDict(extra="forbid", str_to_lower=True, use_enum_values=True)
 
 
-class PollStatusRequest(Base):
-    """polling class when sending a poll request to
-    retrieve status from server of any pending actions"""
+class PollStatusRequest(PollBase):
+    """optional filter when polling the server for pending actions"""
 
-    pass
+    poll_type: Annotated[
+        Optional[PollType],
+        Field(default=None, description="filter by poll category when set"),
+    ]
 
 
-class PollStatusResponse(Base):
-    """polling class when recieving a poll request from
-    the server of any pending actions"""
+class PollEntry(BaseModel):
+    """one pending poll bucket from a specific sender"""
 
-    pass
+    poll_from: UUID
+    poll_type: PollType
+    poll_count: Annotated[int, Field(ge=0)]
+    poll_ids: Annotated[list[int], Field(default_factory=list)]
+
+    model_config = ConfigDict(use_enum_values=True)
+
+
+class PollStatusResponse(BaseModel):
+    """aggregated pending poll state returned to a polling client"""
+
+    count: Annotated[int, Field(default=0, ge=0)]
+    status: Annotated[ReturnStatus, Field(default=ReturnStatus.success)]
+    pending: Annotated[list[PollEntry], Field(default_factory=list)]
+
+    model_config = ConfigDict(use_enum_values=True)
