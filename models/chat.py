@@ -11,7 +11,7 @@ users are identified by UUID, since anyone can be an initiator
 
 from datetime import date
 
-from sqlalchemy import Column, ForeignKey
+from sqlalchemy import Column, ForeignKey, UniqueConstraint
 from sqlalchemy import Date, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -26,29 +26,28 @@ class Chats(Base):
 
     __tablename__ = "chats"
 
+    # chat_id is now the sole primary key
     chat_id = Column(
         UUID(as_uuid=True),
         primary_key=True,
         nullable=False,
     )
 
-    # client A, the chat initiator
+    # client A, the chat initiator (primary_key=True removed)
     peer_client = Column(
         UUID(as_uuid=True),
         ForeignKey("users.user_id"),
-        primary_key=True,
         nullable=False,
     )
 
-    # client B
+    # client B (primary_key=True removed)
     peer_server = Column(
         UUID(as_uuid=True),
         ForeignKey("users.user_id"),
-        primary_key=True,
         nullable=True,
     )
 
-    # end-t-end ecryption key
+    # end-to-end encryption key
     chat_key = Column(
         LowString,
         nullable=False,
@@ -72,6 +71,12 @@ class Chats(Base):
     poll_chat_info = relationship(
         "PollChatNotification", back_populates="chat", uselist=False
     )
+
+    # If we ever want to ensure the same two users can't initiate 
+    # multiple duplicate chat records, uncomment the lines below:
+    # __table_args__ = (
+    #     UniqueConstraint("peer_client", "peer_server", name="uq_chat_peers"),
+    # )
 
 
 __all__ = ["Chats"]
