@@ -46,13 +46,13 @@ Base.metadata.create_all(
         Pets.__table__,
         MedicalRecords.__table__,
         Vaccination.__table__,
+        # chat tables
+        Chats.__table__,
         # polling tables
         Polls.__table__,
         PollNotification.__table__,
         PollCallNotification.__table__,
         PollChatNotification.__table__,
-        # chat tables
-        Chats.__table__,
     ],
 )
 
