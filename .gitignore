@@ -235,6 +235,10 @@ __marimo__/
 .vscode
 .vscode/
 
+# cursor and other ai integrations
+.cursor
+.agents
+
 # ignore sql scripts
 .sql
 *.sql

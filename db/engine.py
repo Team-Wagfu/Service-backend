@@ -11,6 +11,7 @@ from models.user import User
 from models.profile import DoctorProfile, PetOwnerProfile, FacilitatorProfile
 from models.pets import Pets, MedicalRecords, Vaccination
 from models.polls import Polls, PollNotification, PollCallNotification, PollChatNotification
+from models.chat import Chats
 
 from config import config
 
@@ -50,6 +51,8 @@ Base.metadata.create_all(
         PollNotification.__table__,
         PollCallNotification.__table__,
         PollChatNotification.__table__,
+        # chat tables
+        Chats.__table__,
     ],
 )
 

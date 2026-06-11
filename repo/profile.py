@@ -74,7 +74,7 @@ class Profile:
         elif profile_id.startswith("OWN"):
             _ = PetOwnerProfile
 
-        stmt = delete(_).where(_.profile_id == profile_id)
+        stmt = delete(_).where(_.id == profile_id)
         session.execute(stmt)
 
     @staticmethod

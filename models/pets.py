@@ -2,7 +2,7 @@
 # pet related db models
 # Updated 8 May 2026
 
-from datetime import date, datetime
+from datetime import date
 
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy import Column, Enum, ForeignKey, PrimaryKeyConstraint
@@ -28,7 +28,6 @@ class Pets(Base):
         UpString(15),
         ForeignKey("pet_owner_profile.id"),
         nullable=False,
-        primary_key=True,
     )
 
     name = Column(

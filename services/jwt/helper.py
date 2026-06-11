@@ -50,7 +50,7 @@ def create_jwt(payload: dict) -> str:
     return f"{data}.{signature}"
 
 
-def verify_jwt(token: str, secret: str):
+def verify_jwt(token: str, secret: str = config.JWT_SECRET):
     """verify the validity of provided token(token-string)"""
     header_b64, payload_b64, signature = token.split(".")
 

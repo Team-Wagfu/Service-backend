@@ -95,7 +95,7 @@ class User(Base):
         uselist=False,
     )
     clinic_profile = relationship(
-        "ClinicProfile",
+        "FacilitatorProfile",
         back_populates="user",
         uselist=False,
     )

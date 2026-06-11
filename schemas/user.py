@@ -31,3 +31,10 @@ class readUser(BaseModel):
     name: str
     email: EmailStr
     profile_id: PetOwnerID | FacilitatorID | DocID
+
+
+class loginUser(BaseModel):
+    """model used when logging in a user"""
+
+    email: Annotated[EmailStr, Field(...)]
+    pwd: Annotated[str, Field(..., min_length=8, max_length=100)]

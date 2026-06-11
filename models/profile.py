@@ -34,7 +34,7 @@ class PetOwnerProfile(Base):
     user_id = Column(
         UUID(as_uuid=True),
         ForeignKey("users.user_id"),
-        primary_key=True,
+        # primary_key=True,
     )
 
     # generalised column name `id` for program specific user id
@@ -43,6 +43,7 @@ class PetOwnerProfile(Base):
         UpString(15),
         primary_key=True,
         nullable=False,
+        unique=True,
         index=True,
     )
 
@@ -86,13 +87,14 @@ class DoctorProfile(Base):
     user_id = Column(
         UUID(as_uuid=True),
         ForeignKey("users.user_id"),
-        primary_key=True,
+        # primary_key=True,
     )
 
     id = Column(
         UpString(15),
         primary_key=True,
         nullable=False,
+        unique=True,
         index=True,
     )
 
@@ -146,7 +148,7 @@ class FacilitatorProfile(Base):
     user_id = Column(
         UUID(as_uuid=True),
         ForeignKey("users.user_id"),
-        primary_key=True,
+        # primary_key=True,
         index=True,
     )
 
@@ -154,6 +156,7 @@ class FacilitatorProfile(Base):
         UpString(15),
         primary_key=True,
         nullable=False,
+        unique=True,
         index=True,
     )
 
@@ -177,6 +180,8 @@ class FacilitatorProfile(Base):
     links = Column(
         SocialsJSONB,
     )
+
+    user = relationship("User", back_populates="clinic_profile", uselist=False)
 
 
 __all__ = ["PetOwnerProfile", "AdminProfile", "DoctorProfile", "FacilitatorProfile"]

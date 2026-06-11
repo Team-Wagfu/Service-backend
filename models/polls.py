@@ -90,6 +90,7 @@ class PollChatNotification(Base):
 
     chat_id = Column(
         UUID(as_uuid=True),
+        ForeignKey("chats.chat_id"),
         nullable=False,
     )
 

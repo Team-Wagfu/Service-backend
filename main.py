@@ -9,6 +9,7 @@ from api.routes.v1.auth import router as authRouter
 from api.routes.v1.pets import router as petRouter
 from api.routes.v1.polling import router as pollRouter
 from api.routes.v1.pet_addons import router as petAddonRouter
+from api.routes.v1.token import router as tokenRouter
 from db.engine import validate_engine
 from log import configure_logging
 
@@ -65,6 +66,9 @@ app.include_router(pollRouter)
 
 logger.debug("Attached pet addon router")
 app.include_router(petAddonRouter)
+
+logger.debug("Attached token router")
+app.include_router(tokenRouter)
 
 import exception_handler  # noqa: F401,E402 — register global exception handlers
 
