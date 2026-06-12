@@ -71,6 +71,7 @@ logger.debug("Attached token router")
 app.include_router(tokenRouter)
 
 import exception_handler  # noqa: F401,E402 — register global exception handlers
+import middleware  # noqa: F401,E402 — register middlewares
 
 # export to add middleware and exception handlers
 __all__ = ["app"]
