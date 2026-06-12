@@ -4,7 +4,7 @@ import sys
 
 from config import config
 
-BASE_URL=config.url
+BASE_URL = "http://localhost:8000"
 
 def run_test():
     client = httpx.Client(base_url=BASE_URL)

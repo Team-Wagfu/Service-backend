@@ -36,12 +36,14 @@ app.add_middleware(
 async def extract_bearer_cookie_to_header(request: Request, call_next):
     if "authorization" not in request.headers:
         bearer_cookie = request.cookies.get("Bearer")
-        if bearer_cookie:
-            logger.debug("Injecting Bearer token from cookie into Authorization header")
+        if bearer_cookie and bearer_cookie.strip():
+            logger.debug(f"Injecting Bearer token from cookie into Authorization header: {bearer_cookie[:10]}...")
             # Mutate the ASGI scope headers list to inject the Authorization header
             raw_headers = list(request.scope.get("headers", []))
             raw_headers.append((b"authorization", f"Bearer {bearer_cookie}".encode("latin-1")))
             request.scope["headers"] = raw_headers
+        elif bearer_cookie == "":
+            logger.debug("Bearer cookie is empty, skipping injection")
             
     response = await call_next(request)
     return response

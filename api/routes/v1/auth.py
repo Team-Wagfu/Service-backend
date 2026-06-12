@@ -197,7 +197,7 @@ async def login_user(
 
 
 # logout
-@router.post("/logout", status_code=status.HTTP_200_OK, response_class=Response)
+@router.post("/logout", status_code=status.HTTP_200_OK)
 async def logout_user(response: Response, user=Depends(user_metadata)):
 
     logger.debug(
@@ -208,6 +208,8 @@ async def logout_user(response: Response, user=Depends(user_metadata)):
 
     response.delete_cookie(
         "Bearer",
+        path="/",
+        httponly=True,
     )
 
-    return Response(status_code=200, content="Logout successful")
+    return {"message": "Logout successful"}
