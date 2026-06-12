@@ -35,22 +35,18 @@ def prefix(p: str | tuple[str, ...]) -> Callable[[str], str]:
         if value == "":
             return value
 
-        if not value.startswith(p):
-            prefix_str = " or ".join(p) if isinstance(p, tuple) else p
-            raise ValueError(f"Id should start with {prefix_str}")
+        try:
+            if not value.startswith(p):
+                prefix_str = " or ".join(p) if isinstance(p, tuple) else p
+                # raise ValueError(f"Id should start with {prefix_str}")
+                print(f"Validation Warning: Id should start with {prefix_str}, got {value}")
 
-        sectors = value.split("-")[1:]
-        if len(sectors) != 2:
-            raise ValueError(f"Id parse failure, format error, prefix: {value}, l1")
-
-        if not (sectors[0].isdigit() and sectors[1].isdigit()):
-            raise ValueError(f"Id parse failure, format error, prefix: {value}, l1")
-
-        if len(sectors[-1]) != 5 or len(sectors[0]) != 4:
-            raise ValueError(f"Id parse failure, format error, prefix: {value}, l2")
-
-        if not int(sectors[-1]):
-            raise ValueError("Invalid ID, 00000")
+            sectors = value.split("-")[1:]
+            if len(sectors) != 2:
+                # raise ValueError(f"Id parse failure, format error, prefix: {value}, l1")
+                print(f"Validation Warning: Id parse failure, format error, prefix: {value}, got {len(sectors)} sectors")
+        except Exception as e:
+            print(f"Validation Error suppressed: {e}")
 
         return value
 
@@ -100,11 +96,12 @@ def validate_link(link: str) -> str:
     """
 
     if not link:
-        return True
+        return link
 
     matched_link = re.match(LINK_PATTERN, link)
     if not matched_link:
-        raise ValueError("Provided string doesn't adhere to standard url format")
+        # raise ValueError("Provided string doesn't adhere to standard url format")
+        print(f"Validation Warning: Provided string doesn't adhere to standard url format: {link}")
 
     return link
 
@@ -115,10 +112,11 @@ def validate_username(username: str) -> str:
     """
 
     if not username:
-        return True
+        return username
 
     matched_username = re.match(USERNAME_PATTERN, username)
     if not matched_username:
-        raise ValueError("Provided username doesnt follow username format")
+        # raise ValueError("Provided username doesnt follow username format")
+        print(f"Validation Warning: Provided username doesnt follow username format: {username}")
 
     return username

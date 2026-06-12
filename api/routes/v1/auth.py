@@ -34,6 +34,36 @@ router = APIRouter(
 )
 
 
+@router.get("/guest", response_model=readUser)
+async def get_guest_token(
+    response: Response,
+):
+    """
+    Provides a long-lived anonymous token for guest users.
+    Stateless implementation for MVP.
+    """
+    now = datetime.now(timezone.utc)
+    # Long lived token: 10 years
+    token: str = create_jwt(
+        {
+            "name": "Guest User",
+            "exp": int((now + timedelta(days=365 * 10)).timestamp()),
+            "iat": int(now.timestamp()),
+            "role": "guest",
+            "profile_id": "GST-2026-00000",
+        }
+    )
+    
+    logger.debug("Providing guest token: %s", token)
+    response.set_cookie(key="Bearer", value=token, httponly=True)
+    
+    return readUser(
+        name="Guest User",
+        email="guest@wagfu.com",
+        profile_id="GST-2026-00000"
+    )
+
+
 @router.post("/create", response_model=readUser, status_code=status.HTTP_201_CREATED)
 async def create_user(
     userData: Annotated[createUser, Body(...)],

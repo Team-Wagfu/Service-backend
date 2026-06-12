@@ -20,6 +20,15 @@ async def get_token(
     session: Session = Depends(get_db),
 ):
     profile_id = user.get("profile_id")
+    
+    # Handle anonymous guest token
+    if profile_id == "GST-2026-00000":
+        return readUser(
+            name="Guest User",
+            email="guest@wagfu.com",
+            profile_id="GST-2026-00000"
+        )
+        
     stmt = select(User).where(User.profile_id == profile_id)
     db_user = session.scalar(stmt)
     if not db_user:

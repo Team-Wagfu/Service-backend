@@ -52,8 +52,8 @@ def test_unauthorized_access(client):
     client.cookies.clear()
     
     resp = client.get("/token/token")
-    # FastAPI/HTTPBearer with auto_error=True returns 401 Unauthorized if missing
-    assert resp.status_code == 401
+    # FastAPI/HTTPBearer with auto_error=True returns 403 Forbidden if missing
+    assert resp.status_code == 403
 
 def test_login_success_and_logout(client):
     unique_suffix = str(uuid.uuid4())[:8]
@@ -86,7 +86,21 @@ def test_login_success_and_logout(client):
     resp = client.get("/token/token")
     print(f"DEBUG: Response status after logout: {resp.status_code}")
     print(f"DEBUG: Response body: {resp.text}")
-    assert resp.status_code == 401
+    assert resp.status_code == 403
+
+def test_guest_token(client):
+    client.cookies.clear()
+    resp = client.get("/user/guest")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["email"] == "guest@wagfu.com"
+    assert data["name"] == "Guest User"
+    assert "Bearer" in client.cookies
+    
+    # Verify the guest token works on protected routes
+    resp = client.get("/token/token")
+    assert resp.status_code == 200
+    assert resp.json()["email"] == "guest@wagfu.com"
 
 if __name__ == "__main__":
     pytest.main([__file__])

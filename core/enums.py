@@ -190,6 +190,7 @@ class UserType(str, Enum):
     owner = "owner"
     doctor = "doctor"
     facilitator = "fac"
+    guest = "guest"
 
 
 class FacilityType(str, Enum):
