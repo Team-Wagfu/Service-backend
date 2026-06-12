@@ -1,9 +1,9 @@
 import logging
-from os import getenv
 from main import app
 from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
 
+from os import getenv
 from config import config
 
 # configure logging
