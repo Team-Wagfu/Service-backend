@@ -145,16 +145,19 @@ class AddressJSONB(JSONBType):
     address JSONB type (core.types.address)
     """
 
-    def process_bind_param(self, value: dict, dialect):
+    def process_bind_param(self, value, dialect):
         if value is None:
             return None
 
-        if isinstance(value, Address):
+        if isinstance(value, dict):
             try:
                 Address(**value)
                 return value
             except ValidationError as e:
-                raise ValueError("Wrong address format") from e
+                raise ValueError(f"Wrong address format: {e}") from e
+
+        if isinstance(value, Address):
+            return value.model_dump()
 
     def process_result_value(self, value: dict, dialect):
         if value is None:

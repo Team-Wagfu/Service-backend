@@ -176,6 +176,7 @@ def handle_validation_error(req: Request, exc: ValidationError):
 @app.exception_handler(RequestValidationError)
 def handle_request_validation_error(req: Request, exc: RequestValidationError):
     """handle validation error before request processing"""
+    print(f"DEBUG: 422 RequestValidationError: {exc.errors()}")
     return JSONResponse(status_code=422, content={"message": "Unprocessable content"})
 
 
@@ -183,6 +184,8 @@ def handle_request_validation_error(req: Request, exc: RequestValidationError):
 @app.exception_handler(Exception)
 def handler_unknown_error(req: Request, exc: Exception):
     """handle unknown exception"""
+    import traceback
+    traceback.print_exc()
     return JSONResponse(
         status_code=500, content={"message": "unable to serve at the moment"}
     )

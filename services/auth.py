@@ -19,16 +19,23 @@ class AuthService:
         if repo.user_exists(user.email, session):
             raise UserExistsError()
 
-        try:
-            data: User = repo.create_user(user, session)
-            session.commit()
+        from repo.profile import Profile as profile_repo
 
-            return readUser(
-                name=data.display_name, email=data.email, profile_id=data.profile_id
-            )
-        except Exception:
-            session.rollback()
-            raise AuthenticationError()
+        db_user: User = repo.create_user(user, session)
+        
+        # Initialize the specific profile record
+        profile_repo.create_default_profile(
+            session=session,
+            user_id=db_user.user_id,
+            id=db_user.profile_id,
+            user_type=db_user.type
+        )
+        
+        session.commit()
+
+        return readUser(
+            name=db_user.display_name, email=db_user.email, profile_id=db_user.profile_id
+        )
 
     @staticmethod
     def login(email: str, password: str, session: Session) -> readUser:

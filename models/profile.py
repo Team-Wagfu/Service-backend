@@ -9,7 +9,7 @@ from decimal import Decimal
 from sqlalchemy import Column, CheckConstraint, and_, ForeignKey
 from sqlalchemy import String, Numeric
 from sqlalchemy.dialects.postgresql import UUID, ARRAY
-from sqlalchemy.ext.mutable import MutableDict
+from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import validates, relationship
 
 from models.base import Base
@@ -68,7 +68,7 @@ class PetOwnerProfile(Base):
     # make sure the values being appended into the list are ids
     # that exists in the pet table
     pet_ids = Column(
-        MutableDict.as_mutable(ARRAY(String)),
+        MutableList.as_mutable(ARRAY(String)),
         nullable=False,
         default=list,
     )
@@ -125,7 +125,6 @@ class DoctorProfile(Base):
     )
 
     user = relationship("User", back_populates="doctor_profile", uselist=False)
-    
 
 
 class AdminProfile(Base):

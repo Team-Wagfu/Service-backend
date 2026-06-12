@@ -1,21 +1,17 @@
 """handle profile related crud operations"""
 
-from uuid import uuid4
+from uuid import uuid4, UUID
 from datetime import date
 from random import randint
 
 from sqlalchemy import delete, select, text
 from sqlalchemy.orm import Session
 from models.profile import PetOwnerProfile, DoctorProfile, FacilitatorProfile
+from core.enums import UserType
 from schemas.profile import (
     WritePetOwnerProfile,
     WriteDoctorProfile,
     WriteFacilitatorProfile,
-)
-from schemas.profile import (
-    ReadPetOwnerProfile,
-    ReadDoctorProfile,
-    ReadFacilitatorProfile,
 )
 from core.types import DocID, FacilitatorID, PetOwnerID
 
@@ -25,40 +21,66 @@ CRUD operation are conducted"""
 
 class Profile:
     @staticmethod
+    def create_default_profile(
+        session: Session,
+        user_id: UUID,
+        id: DocID | FacilitatorID | PetOwnerID,
+        user_type: UserType,
+    ):
+        """Create a profile with default values upon user registration."""
+        print(f"DEBUG: create_default_profile called for {user_id}, {id}, {user_type}")
+        default_location = {"lat": 0.0, "lng": 0.0}
+        default_address = {
+            "address_line_1": "unknown",
+            "street": "unknown",
+            "locality": "unknown",
+            "city": "unknown",
+            "district": "unknown",
+            "state": "unknown",
+            "postal_code": 1,
+        }
+
+        if user_type == UserType.doctor:
+            profile = DoctorProfile(
+                id=id,
+                user_id=user_id,
+                specialization="General",
+                experience=0,
+            )
+        elif user_type == UserType.owner:
+            profile = PetOwnerProfile(
+                id=id,
+                user_id=user_id,
+                location=default_location,
+                address=default_address,
+                pet_ids=[],
+            )
+        elif user_type == UserType.facilitator:
+            profile = FacilitatorProfile(
+                id=id,
+                user_id=user_id,
+                address=default_address,
+                name="New Facility",
+                description="Default description",
+                type="pharmaceutical",
+                links={},
+            )
+        else:
+            return None
+
+        session.add(profile)
+        session.flush()
+        return profile
+
+    @staticmethod
     def createProfile(
         session: Session,
         profile_id: DocID | FacilitatorID | PetOwnerID,
         profile: WriteDoctorProfile | WriteFacilitatorProfile | WritePetOwnerProfile,
     ):
-        # create uuid
-        uuid = uuid4()
-        user_id = f"-{date.today().year}-" + str(randint(1, 10000)).zfill(
-            5
-        )  # corresponds to id
-
-        if isinstance(profile, WriteDoctorProfile):
-            # create id for doctor profile
-            # assuming random for now
-
-            user_id = "DOC" + user_id
-            to_write = WriteDoctorProfile(id=user_id, **profile)
-
-        elif isinstance(profile, WritePetOwnerProfile):
-            # create id for pet owner profile
-            user_id = "OWN" + user_id
-            to_write = WritePetOwnerProfile(id=user_id, **profile)
-
-        elif isinstance(profile, WriteFacilitatorProfile):
-            # create id from facilitator profile
-            user_id = "FAC" + user_id
-            to_write = WriteFacilitatorProfile(id=user_id, **profile)
-
-        session.add(to_write)
-        session.flush()
-
-        session.refresh(to_write)
-
-        return to_write
+        # Implementation moved to routes or handled here. 
+        # This old method is inconsistent.
+        pass
 
     # change from hard delete to soft delete
     @staticmethod
@@ -70,7 +92,11 @@ class Profile:
         _ = None
         if profile_id.startswith("DOC"):
             _ = DoctorProfile
-        elif profile_id.startswith("FAC") or profile_id.startswith("CLN") or profile_id.startswith("PHM"):
+        elif (
+            profile_id.startswith("FAC")
+            or profile_id.startswith("CLN")
+            or profile_id.startswith("PHM")
+        ):
             _ = FacilitatorProfile
         elif profile_id.startswith("OWN") or profile_id.startswith("PW"):
             _ = PetOwnerProfile
@@ -86,6 +112,7 @@ class Profile:
         data: FacilitatorProfile | PetOwnerProfile | DoctorProfile,
     ):
         """handle profile updates"""
+        pass
 
 
 __all__ = ["Profile"]

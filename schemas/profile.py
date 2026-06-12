@@ -17,11 +17,6 @@ class WriteConfig(BaseModel):
     # user_id is filled automatically at insertion site
     # id is automatically populated at the insertion site
 
-    # common fields
-
-    # from the users table
-    user_id: UUID
-
     # in case of registration, the user_id is intentionally
     # left empty as the user doesnt aquire an id by that time
     # for the forcoming requests, the user_id field shall be
