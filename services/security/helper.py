@@ -7,7 +7,7 @@ def hash_password(pwd: str) -> str:
 
 
 def verify_password(pwd: str, pwd_hash: str) -> bool:
-    return bcrypt.checkpw(pwd.encode("utf=8"), pwd_hash.encode("utf-8"))
+    return bcrypt.checkpw(pwd.encode("utf-8"), pwd_hash.encode("utf-8"))
 
 
 __all__ = ["verify_password", "hash_password"]

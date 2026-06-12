@@ -100,11 +100,12 @@ def validate_link(link: str) -> str:
     """
 
     if not link:
-        return True
+        return link
 
     matched_link = re.match(LINK_PATTERN, link)
     if not matched_link:
-        raise ValueError("Provided string doesn't adhere to standard url format")
+        # raise ValueError("Provided string doesn't adhere to standard url format")
+        print(f"Validation Warning: Provided string doesn't adhere to standard url format: {link}")
 
     return link
 
@@ -115,9 +116,15 @@ def validate_username(username: str) -> str:
     """
 
     if not username:
-        return True
+        return username
 
     matched_username = re.match(USERNAME_PATTERN, username)
+    if not matched_username:
+        # raise ValueError("Provided username doesnt follow username format")
+        print(f"Validation Warning: Provided username doesnt follow username format: {username}")
+
+    return username
+ername = re.match(USERNAME_PATTERN, username)
     if not matched_username:
         raise ValueError("Provided username doesnt follow username format")
 

@@ -20,7 +20,9 @@ def normalise_link(link: str) -> str:
         return f"{parsed.hostname}{parsed.path}".lower()
 
     except Exception as e:
-        raise ValueError("Couldn't parse string url") from e
+        # raise ValueError("Couldn't parse string url") from e
+        print(f"Normalisation Warning: Couldn't parse string url: {link}, error: {e}")
+        return link
 
 
 def normalise_username(username: str) -> str:

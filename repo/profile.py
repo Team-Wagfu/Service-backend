@@ -67,15 +67,17 @@ class Profile:
         profile_id: FacilitatorID | PetOwnerID | DocID,
     ):
         """delete the corresponding profile"""
+        _ = None
         if profile_id.startswith("DOC"):
             _ = DoctorProfile
-        elif profile_id.startswith("FAC"):  # TODO
+        elif profile_id.startswith("FAC") or profile_id.startswith("CLN") or profile_id.startswith("PHM"):
             _ = FacilitatorProfile
-        elif profile_id.startswith("OWN"):
+        elif profile_id.startswith("OWN") or profile_id.startswith("PW"):
             _ = PetOwnerProfile
 
-        stmt = delete(_).where(_.id == profile_id)
-        session.execute(stmt)
+        if _:
+            stmt = delete(_).where(_.id == profile_id)
+            session.execute(stmt)
 
     @staticmethod
     def update_profile(

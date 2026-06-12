@@ -29,8 +29,6 @@ class AuthService:
         except Exception:
             session.rollback()
             raise AuthenticationError()
-        finally:
-            session.close()
 
     @staticmethod
     def login(email: str, password: str, session: Session) -> readUser:
@@ -60,5 +58,3 @@ class AuthService:
         except Exception:
             session.rollback()
             raise AuthenticationError()
-        finally:
-            session.close()
