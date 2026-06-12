@@ -19,7 +19,7 @@ __all__ = [
 
 
 # validator for id prefix
-def prefix(p: str) -> Callable[[str], str]:
+def prefix(p: str | tuple[str, ...]) -> Callable[[str], str]:
     """generates a validator function object
     that validated if the given string satisfies the given conditions
     along with the given prefix
@@ -36,7 +36,8 @@ def prefix(p: str) -> Callable[[str], str]:
             return value
 
         if not value.startswith(p):
-            raise ValueError(f"Id should start with {p}")
+            prefix_str = " or ".join(p) if isinstance(p, tuple) else p
+            raise ValueError(f"Id should start with {prefix_str}")
 
         sectors = value.split("-")[1:]
         if len(sectors) != 2:

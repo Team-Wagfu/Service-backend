@@ -33,9 +33,9 @@ __all__ = [
 
 PetID = Annotated[str, AfterValidator(prefix("PET"))]
 DocID = Annotated[str, AfterValidator(prefix("DOC"))]
-PetOwnerID = Annotated[str, AfterValidator(prefix("PW"))]
-PharmaceuticalID = Annotated[str, AfterValidator(prefix("PHM"))]
-ClinicID = Annotated[str, AfterValidator(prefix("CLN"))]
+PetOwnerID = Annotated[str, AfterValidator(prefix(("PW", "OWN")))]
+PharmaceuticalID = Annotated[str, AfterValidator(prefix(("PHM", "FAC")))]
+ClinicID = Annotated[str, AfterValidator(prefix(("CLN", "FAC")))]
 MedicalRecordID = Annotated[str, AfterValidator(prefix("MED"))]
 PetPassportID = Annotated[str, AfterValidator(prefix("PPA"))]
 FacilitatorID = PharmaceuticalID | ClinicID
