@@ -22,7 +22,7 @@ def b64_urlencode(data: bytes) -> str:
 def b64_urldecode(data: str) -> bytes:
     """url safe base64 decoding"""
     padding = "=" * (-len(data) % 4)
-    return base64.urlsafe_b64decode(data * padding)
+    return base64.urlsafe_b64decode(data + padding)
 
 
 def sign(data: str, secret: str = config.JWT_SECRET) -> str:

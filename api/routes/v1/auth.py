@@ -173,9 +173,9 @@ async def login_user(
     prefix = profile_id.split("-")[0] if profile_id else ""
     if prefix == "DOC":
         role = "doctor"
-    elif prefix == "FAC":
+    elif prefix in ("FAC", "CLN", "PHM"):
         role = "fac"
-    elif prefix == "OWN":
+    elif prefix in ("OWN", "PW"):
         role = "owner"
     else:
         role = ""
